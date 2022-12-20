@@ -1,8 +1,33 @@
-.plog-doc-container {
+$packageName: plog;
+
+.#{$packageName}-doc-container {
   display: flex;
   align-items: stretch;
   justify-content: center;
-  .plog-main-content {
+  .#{$packageName}-main-content {
     flex: 1;
+
+    .#{$packageName}-heading1 {
+      color: green;
+    }
+
+    .#{$packageName}-unordered-list {
+      list-style-type: "\2B50";
+
+      li {
+        padding-left: 0.5em;
+      }
+    }
+
+    .#{$packageName}-code {
+        background-color: skyblue;
+        padding: 0.2em 0.2em;
+        font-weight: 700;
+    }
+    .#{$packageName}-code-block {
+        background-color: gray;
+        padding: 1em;
+        font-weight: 700;
+    }
   }
 }

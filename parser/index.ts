@@ -2,8 +2,15 @@ import * as markdownToVue from "./markdownToVue";
 import * as fs from "node:fs";
 
 const mappings: markdownToVue.Mappings = {
-  h1: "head1",
-  h2: "head2",
+  h1: "heading1",
+  h2: "heading2",
+  h3: "heading3",
+  h4: "heading4",
+  h5: "heading5",
+  ul: "unordered-list",
+  ol: "ordered-list",
+  code: "code",
+  pre: "code-block"
 };
 const packageName = "plog";
 
