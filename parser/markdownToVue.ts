@@ -2,10 +2,14 @@ import * as fs from "node:fs";
 import * as path from "node:path";
 import MarkdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
-import type { Heading } from "../types/doc";
 
 interface Mappings {
   [index: string]: string;
+}
+
+interface Heading {
+  title: string;
+  slug: string;
 }
 
 /**
@@ -55,7 +59,7 @@ export const renderHtmlToVue = (html: string, headings: Heading[]) => {
       <script setup lang="ts">
       import { ref } from "vue";
 
-      const headings = ref(${headings.length === 0 ? "[]" : headings})
+      const headings = ref(${JSON.stringify(headings)})
       </script>
       `;
 
