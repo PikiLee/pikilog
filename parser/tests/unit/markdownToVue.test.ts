@@ -141,7 +141,7 @@ describe("test render html to vue.", () => {
   test("Cover html string and headings is empty", () => {
     const html = "";
     const vue = renderHtmlToVue(html, []);
-    expect(vue).toBe(`<template><div class="container"><div></div><DocContentTable :headings="headings"></DocContentTable></div></template>
+    expect(vue).toBe(`<template><div class="container"><div class="main-content"></div><DocContentTable :headings="headings"></DocContentTable></div></template>
       <script setup lang="ts">
       import { ref } from "vue";
 
@@ -151,8 +151,12 @@ describe("test render html to vue.", () => {
       <style scoped lang="scss">
       .container {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        align-items: stretch;
+        justify-content: center;
+
+        .main-content {
+          flex: 1;
+        }
       }
       </style>
       `);
@@ -161,7 +165,7 @@ describe("test render html to vue.", () => {
   test("Cover html string and headings is not empty", () => {
     const html = "<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading3</h3>";
     const vue = renderHtmlToVue(html, []);
-    expect(vue).toBe(`<template><div class="container"><div>${html}</div><DocContentTable :headings="headings"></DocContentTable></div></template>
+    expect(vue).toBe(`<template><div class="container"><div class="main-content">${html}</div><DocContentTable :headings="headings"></DocContentTable></div></template>
       <script setup lang="ts">
       import { ref } from "vue";
 
@@ -171,8 +175,12 @@ describe("test render html to vue.", () => {
       <style scoped lang="scss">
       .container {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        align-items: stretch;
+        justify-content: center;
+
+        .main-content {
+          flex: 1;
+        }
       }
       </style>
       `);

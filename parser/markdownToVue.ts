@@ -10,6 +10,7 @@ interface Mappings {
 interface Heading {
   title: string;
   slug: string;
+  tag: string;
 }
 
 /**
@@ -48,7 +49,7 @@ const wrapHtmlWithTag = (html: string, tag: string) => {
  * @param {Heading[]} headings
  */
 export const renderHtmlToVue = (html: string, headings: Heading[]) => {
-  let vue = wrapHtmlWithTag(html, "div")
+  let vue = wrapHtmlWithTag(html, `div class="main-content"`)
 
   vue += `<DocContentTable :headings="headings"></DocContentTable>`;
   vue = wrapHtmlWithTag(vue, 'div class="container"');
@@ -67,8 +68,12 @@ export const renderHtmlToVue = (html: string, headings: Heading[]) => {
       <style scoped lang="scss">
       .container {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        align-items: stretch;
+        justify-content: center;
+
+        .main-content {
+          flex: 1;
+        }
       }
       </style>
       `;
@@ -102,8 +107,10 @@ export const render = async (
 
       const headings: Heading[] = [];
       const mdi = MarkdownIt().use(MarkdownItAnchor, {
-        callback: (_token, info) => {
-          headings.push(info);
+        callback: (token, info) => {
+          const heading = {...info} as Heading
+          heading.tag = token.tag
+          headings.push(heading);
         },
       });
       let html = mdi.render(md);
