@@ -1,7 +1,8 @@
 import * as fs from "node:fs";
 import * as path from "node:path";
 import MarkdownIt from "markdown-it";
-import MarkdownItAnchor from "markdown-it-anchor"
+import MarkdownItAnchor from "markdown-it-anchor";
+import type { Heading } from "../types/doc";
 
 interface Mappings {
   [index: string]: string;
@@ -29,6 +30,49 @@ export const addClasses = (html: string, mappings: Mappings) => {
 };
 
 /**
+ * Wrap html string with tags
+ * @param {string} html
+ * @param {string} tag - For example, div, div class="container"
+ */
+const wrapHtmlWithTag = (html: string, tag: string) => {
+  return `<${tag}>${html}</${tag.split(" ")[0]}>`;
+};
+
+/**
+ * Render html to vue
+ * @param {string} html
+ * @param {Heading[]} headings
+ */
+export const renderHtmlToVue = (html: string, headings: Heading[]) => {
+  let vue = wrapHtmlWithTag(html, "div")
+
+  vue += `<DocContentTable :headings="headings"></DocContentTable>`;
+  vue = wrapHtmlWithTag(vue, 'div class="container"');
+
+  vue = wrapHtmlWithTag(vue, "template");
+
+  vue += `
+      <script setup lang="ts">
+      import { ref } from "vue";
+
+      const headings = ref(${headings.length === 0 ? "[]" : headings})
+      </script>
+      `;
+
+  vue += `
+      <style scoped lang="scss">
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      </style>
+      `;
+
+  return vue;
+};
+
+/**
  * Render a directory of markdown files to .vue files
  * @param {string} markdownDirectory - the directory of markdown files
  * @param {string} outoutDirectory - the output directory that would contains the vue file rendered from the content of the input directory.
@@ -52,21 +96,22 @@ export const render = async (
       const file = path.join(markdownDirectory, element.name);
       const md = fs.readFileSync(file).toString();
 
+      const headings: Heading[] = [];
       const mdi = MarkdownIt().use(MarkdownItAnchor, {
-        callback: (token, info) => {
-          console.log(token)
-          console.log(info)
-        }
+        callback: (_token, info) => {
+          headings.push(info);
+        },
       });
       let html = mdi.render(md);
       html = addClasses(html, mappings);
+      const vue = renderHtmlToVue(html, headings);
 
       fs.writeFileSync(
         path.join(
           outputDirectory,
           path.basename(element.name, path.extname(element.name)) + ".vue"
         ),
-        `<template>\n${html}</template>\n`
+        vue
       );
     } else if (element.isDirectory()) {
       await render(
@@ -77,15 +122,3 @@ export const render = async (
     }
   }
 };
-
-const mappings = {
-  h1: "head1",
-  h2: "head2",
-};
-
-const docsDirectory = "./docs";
-const outputDirectory = './pages/docs'
-render(docsDirectory, outputDirectory, mappings);
-fs.watch(docsDirectory, () => {
-  render(docsDirectory, outputDirectory, mappings);
-});

@@ -1,3 +1,4 @@
+import { renderHtmlToVue } from './../../markdownToVue';
 import { addClasses, render } from "../../markdownToVue";
 import { describe, expect, test } from "vitest";
 import { tmpdir } from "node:os";
@@ -126,6 +127,58 @@ describe("test add class to html string", () => {
     expect(() => addClasses(html, mappings)).toThrowError();
   });
 });
+
+/**
+ * partition on html:
+ *  html string is empty
+ *  html string is not empty
+ * 
+ * partition on headings:
+ *  headings is empty
+ *  headings is not empty
+ */
+describe("test render html to vue.", () => {
+  test("Cover html string and headings is empty", () => {
+    const html = "";
+    const vue = renderHtmlToVue(html, []);
+    expect(vue).toBe(`<template><div class="container"><div></div><DocContentTable :headings="headings"></DocContentTable></div></template>
+      <script setup lang="ts">
+      import { ref } from "vue";
+
+      const headings = ref([])
+      </script>
+      
+      <style scoped lang="scss">
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      </style>
+      `);
+  })
+
+  test("Cover html string and headings is not empty", () => {
+    const html = "<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading3</h3>";
+    const vue = renderHtmlToVue(html, []);
+    expect(vue).toBe(`<template><div class="container"><div>${html}</div><DocContentTable :headings="headings"></DocContentTable></div></template>
+      <script setup lang="ts">
+      import { ref } from "vue";
+
+      const headings = ref([])
+      </script>
+      
+      <style scoped lang="scss">
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      </style>
+      `);
+  })
+})
+
 
 /**
  * parition:
