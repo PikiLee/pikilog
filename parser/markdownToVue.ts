@@ -3,7 +3,7 @@ import * as path from "node:path";
 import MarkdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
 
-interface Mappings {
+export interface Mappings {
   [index: string]: string;
 }
 
@@ -49,10 +49,10 @@ const wrapHtmlWithTag = (html: string, tag: string) => {
  * @param {Heading[]} headings
  */
 export const renderHtmlToVue = (html: string, headings: Heading[]) => {
-  let vue = wrapHtmlWithTag(html, `div class="main-content"`)
+  let vue = wrapHtmlWithTag(html, `div class="plog-main-content"`)
 
   vue += `<DocContentTable :headings="headings"></DocContentTable>`;
-  vue = wrapHtmlWithTag(vue, 'div class="container"');
+  vue = wrapHtmlWithTag(vue, 'div class="plog-doc-container"');
 
   vue = wrapHtmlWithTag(vue, "template");
 
@@ -62,20 +62,6 @@ export const renderHtmlToVue = (html: string, headings: Heading[]) => {
 
       const headings = ref(${JSON.stringify(headings)})
       </script>
-      `;
-
-  vue += `
-      <style scoped lang="scss">
-      .container {
-        display: flex;
-        align-items: stretch;
-        justify-content: center;
-
-        .main-content {
-          flex: 1;
-        }
-      }
-      </style>
       `;
 
   return vue;

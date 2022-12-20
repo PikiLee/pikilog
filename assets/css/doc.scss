@@ -1,0 +1,8 @@
+.plog-doc-container {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  .plog-main-content {
+    flex: 1;
+  }
+}

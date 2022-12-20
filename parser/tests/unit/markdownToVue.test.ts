@@ -141,48 +141,24 @@ describe("test render html to vue.", () => {
   test("Cover html string and headings is empty", () => {
     const html = "";
     const vue = renderHtmlToVue(html, []);
-    expect(vue).toBe(`<template><div class="container"><div class="main-content"></div><DocContentTable :headings="headings"></DocContentTable></div></template>
+    expect(vue).toBe(`<template><div class="plog-doc-container"><div class="plog-main-content"></div><DocContentTable :headings="headings"></DocContentTable></div></template>
       <script setup lang="ts">
       import { ref } from "vue";
 
       const headings = ref([])
       </script>
-      
-      <style scoped lang="scss">
-      .container {
-        display: flex;
-        align-items: stretch;
-        justify-content: center;
-
-        .main-content {
-          flex: 1;
-        }
-      }
-      </style>
       `);
   })
 
   test("Cover html string and headings is not empty", () => {
     const html = "<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading3</h3>";
     const vue = renderHtmlToVue(html, []);
-    expect(vue).toBe(`<template><div class="container"><div class="main-content">${html}</div><DocContentTable :headings="headings"></DocContentTable></div></template>
+    expect(vue).toBe(`<template><div class="plog-doc-container"><div class="plog-main-content">${html}</div><DocContentTable :headings="headings"></DocContentTable></div></template>
       <script setup lang="ts">
       import { ref } from "vue";
 
       const headings = ref([])
       </script>
-      
-      <style scoped lang="scss">
-      .container {
-        display: flex;
-        align-items: stretch;
-        justify-content: center;
-
-        .main-content {
-          flex: 1;
-        }
-      }
-      </style>
       `);
   })
 })
