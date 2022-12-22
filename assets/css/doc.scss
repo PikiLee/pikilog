@@ -1,3 +1,4 @@
+@use "sass:color";
 $packageName: plog;
 
 .#{$packageName}-doc-container {
@@ -31,13 +32,14 @@ $packageName: plog;
       li {
         padding-left: 0.5em;
       }
+    }
 
-      .#{$packageName}-ordered-list {
-        list-style-position: inside;
+    .#{$packageName}-ordered-list {
+      list-style-position: inside;
+      padding-left: 0;
 
-        li {
-          padding-left: 0.5em;
-        }
+      li {
+        padding-left: 0.8em;
       }
     }
 
@@ -52,7 +54,7 @@ $packageName: plog;
       padding: 1em;
       font-weight: 700;
       border: 1px solid rgb(114, 114, 114);
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       border-radius: 0.5em;
       width: 30rem;
       overflow-x: scroll;
@@ -77,6 +79,31 @@ $packageName: plog;
     .#{$packageName}-image {
       display: block;
       max-width: 100%;
+    }
+
+    .#{$packageName}-link {
+      color: var(--doc-link);
+      text-decoration: underline;
+    }
+
+    .#{$packageName}-quote {
+      background-color: color.adjust(rgb(148, 218, 44), $alpha: -0.7);
+      border-radius: 0.3em;
+      
+      p {
+        position: relative;
+
+        padding: 1em 3em;
+
+        &::after {
+          content: "💡";
+          position: absolute;
+          top: 50%;
+          left: 0.6em;
+          transform: translateY(-50%);
+        }
+      }
+
     }
   }
 }

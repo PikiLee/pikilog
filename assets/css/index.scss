@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
 *,
 *::before,
 *::after {
@@ -9,6 +11,8 @@ body {
     --text-white: #FFFFFF;
     --text-white-dark-1: #E9E9E9;
     --line-dark: #6D6D6D;
+    --doc-link: greenyellow;
+    --bg-doc-quote: rgb(90, 133, 26);
     background-color: var(--bg-dark);
     overflow-x: hidden;
 }

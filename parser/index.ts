@@ -12,6 +12,8 @@ const mappings: markdownToVue.Mappings = {
   code: "code",
   pre: "code-block",
   img: "image",
+  a: "link",
+  blockquote: "quote",
 };
 const packageName = "plog";
 
