@@ -11,12 +11,15 @@
     "compile:parser": "cd ./parser && tsc"
   },
   "devDependencies": {
+    "@types/lodash-es": "^4.17.6",
     "nuxt": "3.0.0",
     "sass": "^1.57.1",
     "sass-loader": "^13.2.0",
     "vitest": "^0.26.0"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "markdown-it": "^13.0.1",
     "markdown-it-anchor": "^8.6.6"
   }

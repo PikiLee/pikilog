@@ -4,6 +4,7 @@ import * as path from "node:path";
 import MarkdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
 import appConfig from "../plog.config";
+import * as lodash from "lodash";
 
 export interface Mappings {
   [index: string]: string;
@@ -23,9 +24,25 @@ export interface Mappings {
  * @return {string} - html string
  */
 export const addClasses = (html: string, mappings: Mappings) => {
-  for (let key in mappings) {
-    if (mappings[key].includes('"')) throw "mapping'value can not inclue \"";
-    html = html.replace(`<${key}`, `<${key} class="${mappings[key]}"`);
+  for (let tag in mappings) {
+    const escapedClass = lodash.escape(mappings[tag]);
+    const regex = new RegExp(`<${tag}.*?>`, "gs");
+
+    html = html.replaceAll(regex, (match) => {
+      let addedClassMatch = match;
+      const classIndex = match.indexOf("class")
+      if (classIndex !== -1) {
+        const insertClassIndex = 7 + classIndex
+        addedClassMatch = `${match.slice(0, insertClassIndex)}${escapedClass} ${match.slice(insertClassIndex)}`
+      } else {
+        const insertClassIndex = 1 + tag.length
+        addedClassMatch = `${match.slice(
+          0,
+        insertClassIndex
+        )} class="${escapedClass}"${match.slice(insertClassIndex)}`;
+      }
+      return addedClassMatch;
+    });
   }
   return html;
 };

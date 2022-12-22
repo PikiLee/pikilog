@@ -57,6 +57,13 @@ $packageName: plog;
       width: 30rem;
       overflow-x: scroll;
 
+      .#{$packageName}-code {
+        background-color: transparent;
+        padding: 0;
+        font-weight: inherit;
+        border-radius: 0;
+      }
+
       &::-webkit-scrollbar {
         height: 0.4em;
       }

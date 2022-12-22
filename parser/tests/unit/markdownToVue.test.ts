@@ -80,7 +80,8 @@ export const getDirectoryContent = async (directory: string) => {
 /**
  * Partition on html string:
  *  html string is empty
- *  html string is not empty
+ *  html string is not empty and has no class 
+ *  html string is not empty and has class
  *
  * Partition on mappings:
  *  mappings is empty
@@ -92,23 +93,23 @@ describe("test add class to html string", () => {
   test("Cover html string is empty and mappings is empty", () => {
     const html = "";
     const mappings = {};
-    const res = addClasses(html, mappings);
-    expect(res).toBe(html);
+    const result = addClasses(html, mappings);
+    expect(result).toBe(html);
   });
 
-  test("Cover html string is not empty and m0 < the number of mappings <= the number of tags in html string", () => {
-    const html = "<h1>I am Title</h1><h2>subtitle</h2>";
+  test("Cover html string is not empty and has class and 0 < the number of mappings <= the number of tags in html string", () => {
+    const html = `<h1 class="title">I am Title</h1><h2>subtitle</h2>`
     const mappings = {
       h1: "head1",
       h2: "head2",
     };
     const res = addClasses(html, mappings);
     expect(res).toEqual(
-      '<h1 class="head1">I am Title</h1><h2 class="head2">subtitle</h2>'
+      '<h1 class="head1 title">I am Title</h1><h2 class="head2">subtitle</h2>'
     );
   });
 
-  test("Cover html string is not empty and the number of mappings > the number of tags in html string", () => {
+  test("Cover html string is not empty and has no class and the number of mappings > the number of tags in html string", () => {
     const html = "<h1>I am Title</h1><h2>subtitle</h2>";
     const mappings = {
       h1: "head1",
@@ -119,14 +120,6 @@ describe("test add class to html string", () => {
     expect(res).toEqual(
       '<h1 class="head1">I am Title</h1><h2 class="head2">subtitle</h2>'
     );
-  });
-
-  test("throw error if mapping's value contains \"", () => {
-    const html = "<h1>I am Title</h1><h2>subtitle</h2>";
-    const mappings = {
-      h1: 'head1"',
-    };
-    expect(() => addClasses(html, mappings)).toThrowError();
   });
 });
 
