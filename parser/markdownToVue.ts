@@ -1,3 +1,4 @@
+import { Heading } from './../types/doc';
 import * as fs from "node:fs";
 import * as path from "node:path";
 import MarkdownIt from "markdown-it";
@@ -5,12 +6,6 @@ import MarkdownItAnchor from "markdown-it-anchor";
 
 export interface Mappings {
   [index: string]: string;
-}
-
-interface Heading {
-  title: string;
-  slug: string;
-  tag: string;
 }
 
 /**
