@@ -4,8 +4,13 @@ $packageName: plog;
   display: flex;
   align-items: stretch;
   justify-content: center;
+  gap: 3rem;
+
   .#{$packageName}-main-content {
     flex: 1;
+    padding-inline: 5rem;
+    border: 1px solid skyblue;
+    border-radius: 2rem;
 
     .#{$packageName}-heading1 {
       color: green;
