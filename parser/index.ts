@@ -30,7 +30,7 @@ const watch = (
 ) => {
   if (immediate) callback();
   sources.forEach((source) => {
-    fs.watch(source, () => {
+    fs.watch(source, { recursive: true }, () => {
       callback();
     });
   });
