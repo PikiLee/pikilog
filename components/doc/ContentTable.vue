@@ -9,35 +9,50 @@ defineProps<Props>();
 
 <template>
   <div class="content-table">
-    <ul class="list">
-      <li
-        :class="[heading.tag]"
-        v-for="heading in headings"
-        :key="heading.slug"
-      >
-        <a :href="`#${heading.slug}`">{{ heading.title }}</a>
-      </li>
-    </ul>
+    <div class="sticky">
+      <header class="title">Table of Contents</header>
+      <ul class="list">
+        <li
+          :class="[heading.tag, 'item']"
+          v-for="heading in headings"
+          :key="heading.slug"
+        >
+          <a :href="`#${heading.slug}`">{{ heading.title }}</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .content-table {
-  .list {
-    top: 0;
-    left: 0;
+  color: var(--text-white-dark-1);
+  .sticky {
     position: sticky;
-    .h1 {
-      font-size: 2rem;
-    }
-    .h2 {
-      font-size: 1.5rem;
-      padding-left: 1rem;
-    }
+    top: 3rem;
 
-    .h3 {
-      font-size: 1rem;
-      padding-left: 2rem;
+    .title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-white);
+    }
+    .list {
+      top: 0;
+      left: 0;
+      position: sticky;
+      $base-padding-left: 1rem;
+      $base-font-size: 1.2rem;
+
+      .item {
+        margin-bottom: 0.3em;
+      }
+
+      @for $i from 1 through 6 {
+        .h#{$i} {
+          font-size: $base-font-size - (0.2rem * ($i - 1));
+          padding-left: $base-padding-left * ($i - 1);
+        }
+      }
     }
   }
 }

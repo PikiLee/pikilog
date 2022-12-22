@@ -11,6 +11,7 @@ const mappings: markdownToVue.Mappings = {
   ol: "ordered-list",
   code: "code",
   pre: "code-block",
+  img: "image",
 };
 const packageName = "plog";
 

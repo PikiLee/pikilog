@@ -3,3 +3,22 @@
 *::after {
     box-sizing: content-box;
 }
+
+body {
+    --bg-dark: #2D2D2D;
+    --text-white: #FFFFFF;
+    --text-white-dark-1: #E9E9E9;
+    --line-dark: #6D6D6D;
+    background-color: var(--bg-dark);
+    overflow-x: hidden;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}

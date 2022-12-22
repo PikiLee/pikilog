@@ -4,7 +4,7 @@ export default {
       {
         text: "Guide",
         items: [
-          { text: "Introduction1", link: "/docs/guide/introduction" },
+          { text: "Introduction", link: "/docs/guide/introduction" },
           { text: "Part1", link: "/docs/guide/part1" },
         ],
       },
