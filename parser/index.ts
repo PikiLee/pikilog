@@ -10,7 +10,7 @@ const mappings: markdownToVue.Mappings = {
   ul: "unordered-list",
   ol: "ordered-list",
   code: "code",
-  pre: "code-block"
+  pre: "code-block",
 };
 const packageName = "plog";
 
@@ -21,7 +21,25 @@ for (let tag in mappings) {
 
 const docsDirectory = "./docs";
 const outputDirectory = "./pages/docs";
-markdownToVue.render(docsDirectory, outputDirectory, mappings);
-fs.watch(docsDirectory, () => {
-  markdownToVue.render(docsDirectory, outputDirectory, mappings);
-});
+const appConfigPath = "./plog.config.ts";
+
+const watch = (
+  sources: string[],
+  callback: Function,
+  immediate: boolean = false
+) => {
+  if (immediate) callback();
+  sources.forEach((source) => {
+    fs.watch(source, () => {
+      callback();
+    });
+  });
+};
+
+watch(
+  [docsDirectory, appConfigPath],
+  () => {
+    markdownToVue.render(docsDirectory, outputDirectory, mappings);
+  },
+  true
+);

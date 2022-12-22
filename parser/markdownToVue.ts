@@ -1,8 +1,9 @@
-import { Heading } from './../types/doc';
+import type { Heading, DocSideBarConfig } from "./../types/doc";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import MarkdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
+import appConfig from "../plog.config";
 
 export interface Mappings {
   [index: string]: string;
@@ -42,9 +43,18 @@ const wrapHtmlWithTag = (html: string, tag: string) => {
  * Render html to vue
  * @param {string} html
  * @param {Heading[]} headings
+ * @param {DocSideBarConfig} sideBarConfig
  */
-export const renderHtmlToVue = (html: string, headings: Heading[]) => {
-  let vue = wrapHtmlWithTag(html, `div class="plog-main-content"`)
+export const renderHtmlToVue = (
+  html: string,
+  headings: Heading[],
+  sideBarConfig?: DocSideBarConfig
+) => {
+  let vue = wrapHtmlWithTag(html, `div class="plog-main-content"`);
+
+  if (sideBarConfig) {
+    vue = `<DocSideBar :config="sideBarConfig" ></DocSideBar>` + vue;
+  }
 
   vue += `<DocContentTable :headings="headings"></DocContentTable>`;
   vue = wrapHtmlWithTag(vue, 'div class="plog-doc-container"');
@@ -53,9 +63,9 @@ export const renderHtmlToVue = (html: string, headings: Heading[]) => {
 
   vue += `
       <script setup lang="ts">
-      import { ref } from "vue";
 
-      const headings = ref(${JSON.stringify(headings)})
+      const headings = ${JSON.stringify(headings)}
+      const sideBarConfig = ${JSON.stringify(sideBarConfig)}
       </script>
       `;
 
@@ -66,11 +76,14 @@ export const renderHtmlToVue = (html: string, headings: Heading[]) => {
  * Render a directory of markdown files to .vue files
  * @param {string} markdownDirectory - the directory of markdown files
  * @param {string} outoutDirectory - the output directory that would contains the vue file rendered from the content of the input directory.
+ * @param {Mappings} mappings - html tag to class mapping.
+ * @param {DocSideBarConfig} sideBarConfig - optional, if not passed, it will find the sideBarConfig of the current markdown directory from plog.config.ts
  */
 export const render = async (
   markdownDirectory: string,
   outputDirectory: string,
-  mappings: Mappings
+  mappings: Mappings,
+  sideBarConfig?: DocSideBarConfig
 ) => {
   const markdownDirectoryHandle = fs.opendirSync(markdownDirectory);
 
@@ -89,14 +102,15 @@ export const render = async (
       const headings: Heading[] = [];
       const mdi = MarkdownIt().use(MarkdownItAnchor, {
         callback: (token, info) => {
-          const heading = {...info} as Heading
-          heading.tag = token.tag
+          const heading = { ...info } as Heading;
+          heading.tag = token.tag;
           headings.push(heading);
         },
       });
       let html = mdi.render(md);
       html = addClasses(html, mappings);
-      const vue = renderHtmlToVue(html, headings);
+
+      const vue = renderHtmlToVue(html, headings, sideBarConfig);
 
       fs.writeFileSync(
         path.join(
@@ -106,10 +120,16 @@ export const render = async (
         vue
       );
     } else if (element.isDirectory()) {
+      if (!sideBarConfig) {
+        sideBarConfig =
+          appConfig.sideBar[element.name as keyof typeof appConfig.sideBar];
+      }
+
       await render(
         path.join(markdownDirectory, element.name),
         path.join(outputDirectory, element.name),
-        mappings
+        mappings,
+        sideBarConfig
       );
     }
   }

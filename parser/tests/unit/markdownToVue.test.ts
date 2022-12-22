@@ -1,4 +1,4 @@
-import { renderHtmlToVue } from './../../markdownToVue';
+import { renderHtmlToVue } from "./../../markdownToVue";
 import { addClasses, render } from "../../markdownToVue";
 import { describe, expect, test } from "vitest";
 import { tmpdir } from "node:os";
@@ -48,9 +48,9 @@ const createFilesAndDirectoriesInTemporaryDirectory = (
   const { temporaryDirectory, removeTemporaryDirectory } =
     createTemporaryDirectory();
 
-  createFilesAndDirectories(temporaryDirectory, FilesAndDirectories)
+  createFilesAndDirectories(temporaryDirectory, FilesAndDirectories);
 
-  return { temporaryDirectory,removeTemporaryDirectory}
+  return { temporaryDirectory, removeTemporaryDirectory };
 };
 
 /**
@@ -65,7 +65,9 @@ export const getDirectoryContent = async (directory: string) => {
     if (dirent.isFile()) {
       directoyrContent.push(dirent.name);
     } else if (dirent.isDirectory()) {
-      const content = await getDirectoryContent(path.join(directory, dirent.name));
+      const content = await getDirectoryContent(
+        path.join(directory, dirent.name)
+      );
       if (content)
         directoyrContent.push({
           [dirent.name]: content,
@@ -132,37 +134,41 @@ describe("test add class to html string", () => {
  * partition on html:
  *  html string is empty
  *  html string is not empty
- * 
+ *
  * partition on headings:
  *  headings is empty
  *  headings is not empty
+ *
+ * partition on sideBarConfig:
+ *  no sideBarConfig
+ *  has sideBarConfig
  */
 describe("test render html to vue.", () => {
-  test("Cover html string and headings is empty", () => {
+  test("Cover html string, headings is empty, no sideBarConfig", () => {
     const html = "";
     const vue = renderHtmlToVue(html, []);
-    expect(vue).toBe(`<template><div class="plog-doc-container"><div class="plog-main-content"></div><DocContentTable :headings="headings"></DocContentTable></div></template>
-      <script setup lang="ts">
-      import { ref } from "vue";
+    expect(vue).toMatch(
+      /^<template>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
+    );
+  });
 
-      const headings = ref([])
-      </script>
-      `);
-  })
-
-  test("Cover html string and headings is not empty", () => {
+  test("Cover html string, headings is not empty, has sideBarConfig", () => {
     const html = "<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading3</h3>";
-    const vue = renderHtmlToVue(html, []);
-    expect(vue).toBe(`<template><div class="plog-doc-container"><div class="plog-main-content">${html}</div><DocContentTable :headings="headings"></DocContentTable></div></template>
-      <script setup lang="ts">
-      import { ref } from "vue";
-
-      const headings = ref([])
-      </script>
-      `);
-  })
-})
-
+    const sideBarConfig = [
+      {
+        text: "Guide",
+        items: [
+          { text: "Introduction", link: "/guide/introduction" },
+          { text: "Part1", link: "/guide/part1" },
+        ],
+      },
+    ];
+    const vue = renderHtmlToVue(html, [], sideBarConfig);
+    expect(vue).toMatch(
+      /^<template>.*<DocSideBar :config="sideBarConfig" ><\/DocSideBar>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
+    );
+  });
+});
 
 /**
  * parition:
@@ -176,37 +182,49 @@ describe("test render html to vue.", () => {
  */
 describe("Test render a directory of markdown files to .vue files", () => {
   test("Cover the directroy is empty", async () => {
-    const {temporaryDirectory: docsDirectory, removeTemporaryDirectory: removeDocsDirectory} = createTemporaryDirectory()
-    const {temporaryDirectory: outputDirectory, removeTemporaryDirectory: removeOutputDocsDirectory} = createTemporaryDirectory()
+    const {
+      temporaryDirectory: docsDirectory,
+      removeTemporaryDirectory: removeDocsDirectory,
+    } = createTemporaryDirectory();
+    const {
+      temporaryDirectory: outputDirectory,
+      removeTemporaryDirectory: removeOutputDocsDirectory,
+    } = createTemporaryDirectory();
     const mappings = {
       h1: "head1",
       h2: "head2",
       p: "paragraph",
     };
 
-    await render(docsDirectory, outputDirectory,  mappings);
+    await render(docsDirectory, outputDirectory, mappings);
     const outputDirectoryContent = await getDirectoryContent(outputDirectory);
     expect(outputDirectoryContent.length).toBe(0);
 
-    removeDocsDirectory()
-    removeOutputDocsDirectory()
+    removeDocsDirectory();
+    removeOutputDocsDirectory();
   });
   test("Cover The directory contains files and more than one type of files.", async () => {
     const docsDirectoryContent = ["file1.md", "file2.md", "file3"];
-    const {temporaryDirectory: docsDirectory, removeTemporaryDirectory: removeDocsDirectory} = createFilesAndDirectoriesInTemporaryDirectory(docsDirectoryContent)
-    const {temporaryDirectory: outputDirectory, removeTemporaryDirectory: removeOutputDocsDirectory} = createTemporaryDirectory()
+    const {
+      temporaryDirectory: docsDirectory,
+      removeTemporaryDirectory: removeDocsDirectory,
+    } = createFilesAndDirectoriesInTemporaryDirectory(docsDirectoryContent);
+    const {
+      temporaryDirectory: outputDirectory,
+      removeTemporaryDirectory: removeOutputDocsDirectory,
+    } = createTemporaryDirectory();
     const mappings = {
       h1: "head1",
       h2: "head2",
       p: "paragraph",
     };
 
-    await render(docsDirectory, outputDirectory,  mappings);
+    await render(docsDirectory, outputDirectory, mappings);
     const outputDirectoryContent = await getDirectoryContent(outputDirectory);
     expect(outputDirectoryContent).toStrictEqual(["file1.vue", "file2.vue"]);
 
-    removeDocsDirectory()
-    removeOutputDocsDirectory()
+    removeDocsDirectory();
+    removeOutputDocsDirectory();
   });
   test("Cover The directory contains directries and one type of files", async () => {
     const docsDirectoryContent = [
@@ -216,21 +234,31 @@ describe("Test render a directory of markdown files to .vue files", () => {
       "file3.md",
       "file4.md",
     ];
-     const {temporaryDirectory: docsDirectory, removeTemporaryDirectory: removeDocsDirectory} = createFilesAndDirectoriesInTemporaryDirectory(docsDirectoryContent)
-    const {temporaryDirectory: outputDirectory, removeTemporaryDirectory: removeOutputDocsDirectory} = createTemporaryDirectory()
+    const {
+      temporaryDirectory: docsDirectory,
+      removeTemporaryDirectory: removeDocsDirectory,
+    } = createFilesAndDirectoriesInTemporaryDirectory(docsDirectoryContent);
+    const {
+      temporaryDirectory: outputDirectory,
+      removeTemporaryDirectory: removeOutputDocsDirectory,
+    } = createTemporaryDirectory();
     const mappings = {
       h1: "head1",
       h2: "head2",
       p: "paragraph",
     };
 
-    await render(docsDirectory, outputDirectory,  mappings);
+    await render(docsDirectory, outputDirectory, mappings);
     const outputDirectoryContent = await getDirectoryContent(outputDirectory);
-    expect(outputDirectoryContent).toStrictEqual([{
-      dir1: ["file1.vue", "file2.vue"]
-    },"file3.vue", "file4.vue"]);
+    expect(outputDirectoryContent).toStrictEqual([
+      {
+        dir1: ["file1.vue", "file2.vue"],
+      },
+      "file3.vue",
+      "file4.vue",
+    ]);
 
-    removeDocsDirectory()
-    removeOutputDocsDirectory()
+    removeDocsDirectory();
+    removeOutputDocsDirectory();
   });
 });

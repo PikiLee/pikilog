@@ -7,8 +7,8 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "test:parser": "vitest -w --dir parser",
-    "watch:docs": "node parser/dist/index.js",
-    "compile:parser": "cd parser && tsc"
+    "watch:docs": "node parser/dist/parser/index.js",
+    "compile:parser": "cd ./parser && tsc"
   },
   "devDependencies": {
     "nuxt": "3.0.0",
