@@ -26,7 +26,7 @@ defineProps<{
   color: $text-white-dark-1;
   .sticky{
     position: sticky;
-    top: 3rem;
+    top: $app-header-height * 1.2;
 
   .section-title {
     font-size: 2rem;

@@ -17,6 +17,7 @@ export default defineNuxtConfig({
                     $doc-link: greenyellow;
                     $bg-doc-quote: rgb(90, 133, 26);
                     $bg-home-card: #2D2D2D;
+                    $app-header-height: 4rem;
                     `
                 }
             }

@@ -15,7 +15,7 @@
 <style scoped lang="scss">
 .header {
   position: sticky;
-  height: 4rem;
+  height: $app-header-height;
   background-color: $bg-home-card;
   top: 0;
   display: flex;
@@ -33,7 +33,7 @@
     font-size: 1.3rem;
     font-weight: 700;
     .icon-wrapper {
-      $icon-size: 3rem;
+      $icon-size: $app-header-height * 0.7;
       width: $icon-size;
       height: $icon-size;
       overflow: hidden;
