@@ -23,7 +23,7 @@ defineProps<{
 
 <style scoped lang="scss">
 .container {
-  color: var(--text-white-dark-1);
+  color: $text-white-dark-1;
   .sticky{
     position: sticky;
     top: 3rem;
@@ -31,7 +31,7 @@ defineProps<{
   .section-title {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--text-white);
+    color: $text-white;
   }
   .item {
     font-size: 1.2rem;

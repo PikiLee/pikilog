@@ -26,7 +26,7 @@ defineProps<Props>();
 
 <style scoped lang="scss">
 .content-table {
-  color: var(--text-white-dark-1);
+  color: $text-white-dark-1;
   .sticky {
     position: sticky;
     top: 3rem;
@@ -34,7 +34,7 @@ defineProps<Props>();
     .title {
       font-size: 1.5rem;
       font-weight: 600;
-      color: var(--text-white);
+      color: $text-white;
     }
     .list {
       top: 0;

@@ -13,13 +13,13 @@ $packageName: plog;
   .#{$packageName}-main-content {
     flex: 1;
     padding-inline: 2rem;
-    color: var(--text-white-dark-1);
-    border-right: 1px solid var(--line-dark);
-    border-left: 1px solid var(--line-dark);
+    color: $text-white-dark-1;
+    border-right: 1px solid $line-dark;
+    border-left: 1px solid $line-dark;
 
     @for $i from 1 through 6 {
       .#{$packageName}-heading#{$i} {
-        color: var(--text-white);
+        color: $text-white;
         font-size: 3rem - (0.2rem * $i);
         font-weight: 900;
       }
@@ -82,12 +82,12 @@ $packageName: plog;
     }
 
     .#{$packageName}-link {
-      color: var(--doc-link);
+      color: $doc-link;
       text-decoration: underline;
     }
 
     .#{$packageName}-quote {
-      background-color: color.adjust(rgb(148, 218, 44), $alpha: -0.7);
+      background-color: color.adjust($bg-doc-quote, $alpha: -0.7);
       border-radius: 0.3em;
       
       p {
