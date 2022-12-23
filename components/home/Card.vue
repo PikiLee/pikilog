@@ -19,15 +19,18 @@ defineProps<{
 
 <style scoped lang="scss">
 .card {
+    $row-1-height: 5rem;
+    $row-2-height: 3rem;
+    $intro-padding-left: 2rem;
     display: grid;
     color: $text-white;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: 5rem 3rem;
-    width: min(100%, 30rem);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-rows: $row-1-height $row-2-height;
+    width: min(90%, 30rem);
+    margin: auto;
     background-color: $bg-home-card;
     border-radius: 0.2em;
     overflow: hidden;
-    column-gap: 2rem;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
     .cover-container {
@@ -48,13 +51,20 @@ defineProps<{
         .title {
             font-size: 1.5rem;
             align-self: center;
+            height: $row-1-height;
+            padding-left: $intro-padding-left;
+            display: grid;
+            align-items: center;
         }
 
         .time {
             font-size: 0.7rem;
             color: $text-white-dark-1;
-            display: block;
             align-self: center;
+            height: $row-2-height;
+            padding-left: $intro-padding-left;
+            display: grid;
+            align-items: center;
     }
 }
 </style>
