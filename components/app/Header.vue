@@ -1,0 +1,54 @@
+<script setup lang="ts"></script>
+<template>
+  <div class="header">
+    <figure class="figure">
+      <div class="icon-wrapper">
+        <img class="icon" src="~/assets/images/icon.jpg" alt="" />
+      </div>
+      <caption>
+        Piki's Blog
+      </caption>
+    </figure>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.header {
+  position: sticky;
+  height: 4rem;
+  background-color: $bg-home-card;
+  top: 0;
+  display: flex;
+  align-items: center;
+  margin-bottom: 4rem;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
+    rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+
+  .figure {
+    margin-left: 20%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    place-items: center;
+    color: $text-white;
+    font-size: 1.3rem;
+    font-weight: 700;
+    .icon-wrapper {
+      $icon-size: 3rem;
+      width: $icon-size;
+      height: $icon-size;
+      overflow: hidden;
+      border-radius: 50%;
+      background-color: $bg-home-card;
+      border-radius: 50%;
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
+        rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
+        rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
+
+      .icon {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
+</style>
