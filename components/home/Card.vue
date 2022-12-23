@@ -6,7 +6,7 @@ defineProps<{
 
 </script>
 <template>
-  <a :href="card.link" target="_blank">
+  <a :href="card.link">
     <div class="card">
       <div class="cover-container">
         <img class="img" :src="card.cover" alt="" />
