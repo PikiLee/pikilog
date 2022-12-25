@@ -1,16 +1,18 @@
 <script setup lang="ts"></script>
 <template>
   <div class="header">
+    <div></div>
     <NuxtLink to="/" class="icon-area">
       <figure class="figure">
         <div class="icon-wrapper">
           <img class="icon" src="~/assets/images/icon.jpg" alt="" />
         </div>
-        <caption>
+        <caption class="title">
           Piki's Blog
         </caption>
       </figure>
     </NuxtLink>
+    <div></div>
   </div>
 </template>
 
@@ -20,21 +22,23 @@
   height: $app-header-height;
   background-color: $bg-home-card;
   top: 0;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr minmax(15rem, 1fr) 4fr;
   align-items: center;
   margin-bottom: 4rem;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  
 
   .icon-area {
-    margin-left: 20%;
     .figure {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 2fr;
       place-items: center;
       color: $text-white;
       font-size: 1.3rem;
       font-weight: 700;
+      margin: 0;
       .icon-wrapper {
         $icon-size: $app-header-height * 0.7;
         width: $icon-size;
@@ -51,6 +55,10 @@
           width: 100%;
           height: 100%;
         }
+      }
+
+      .title {
+        justify-self: flex-start;
       }
     }
   }
