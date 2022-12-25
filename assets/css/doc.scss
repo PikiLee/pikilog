@@ -7,18 +7,18 @@ $packageName: plog;
   align-items: stretch;
   justify-content: center;
   gap: 3rem;
-  width: min(100%, 1000px);
+  width: min(100%, 1300px);
   margin: auto;
   margin-top: 2em;
   padding-inline: 2rem;
 
-   @media screen and (max-width: 1200px) {
-     grid-template-columns: 10rem 1fr;
-   }
+  @media screen and (max-width: 1200px) {
+    grid-template-columns: 10rem 1fr;
+  }
 
-   @media screen and (max-width: 700px) {
-     grid-template-columns: 1fr;
-   }
+  @media screen and (max-width: 700px) {
+    grid-template-columns: 1fr;
+  }
 
   .#{$packageName}-main-content {
     padding-inline: 1rem;
@@ -29,8 +29,9 @@ $packageName: plog;
     @for $i from 1 through 6 {
       .#{$packageName}-heading#{$i} {
         color: $text-white;
-        font-size: 3rem - (0.2rem * $i);
+        font-size: 2.5rem - (0.4rem * $i);
         font-weight: 900;
+        margin-top: 2em - (0.3em * $i);
       }
     }
 
@@ -99,7 +100,7 @@ $packageName: plog;
     .#{$packageName}-quote {
       background-color: color.adjust($bg-doc-quote, $alpha: -0.7);
       border-radius: 0.3em;
-      
+
       p {
         position: relative;
 
@@ -113,7 +114,6 @@ $packageName: plog;
           transform: translateY(-50%);
         }
       }
-
     }
   }
 }
