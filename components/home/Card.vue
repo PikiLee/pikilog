@@ -19,13 +19,11 @@ defineProps<{
 
 <style scoped lang="scss">
 .card {
-    $row-1-height: 5rem;
-    $row-2-height: 3rem;
-    $intro-padding-left: 2rem;
+    $intro-padding-left: 1rem;
     display: grid;
     color: $text-white;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    grid-template-rows: $row-1-height $row-2-height;
+    grid-template-rows: minmax(5rem, auto) minmax(3rem, auto);
     width: min(90%, 30rem);
     margin: auto;
     background-color: $bg-home-card;
@@ -51,8 +49,7 @@ defineProps<{
         .title {
             font-size: 1.5rem;
             align-self: center;
-            height: $row-1-height;
-            padding-left: $intro-padding-left;
+            padding: $intro-padding-left;
             display: grid;
             align-items: center;
         }
@@ -61,10 +58,9 @@ defineProps<{
             font-size: 0.7rem;
             color: $text-white-dark-1;
             align-self: center;
-            height: $row-2-height;
-            padding-left: $intro-padding-left;
+            padding: $intro-padding-left;
             display: grid;
             align-items: center;
+        }
     }
-}
 </style>

@@ -21,7 +21,7 @@ export default {
       text: "Guide-part1",
       link: "/docs/guide/part1",
       createdAt: "2022-12-23T12:00",
-      cover: "/images/icon1.jpg",
+      cover: "/images/f.jpg",
     },
   ],
 };
