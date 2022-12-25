@@ -27,6 +27,10 @@ defineProps<Props>();
 <style scoped lang="scss">
 .content-table {
   color: $text-white-dark-1;
+
+  @media screen and (max-width: 1200px) {
+    display: none;
+  }
   .sticky {
     position: sticky;
     top: $app-header-height * 1.2;

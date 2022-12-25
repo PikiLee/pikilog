@@ -2,17 +2,26 @@
 $packageName: plog;
 
 .#{$packageName}-doc-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 10rem 1fr 10rem;
   align-items: stretch;
   justify-content: center;
   gap: 3rem;
   width: min(100%, 1000px);
   margin: auto;
   margin-top: 2em;
+  padding-inline: 2rem;
+
+   @media screen and (max-width: 1200px) {
+     grid-template-columns: 10rem 1fr;
+   }
+
+   @media screen and (max-width: 700px) {
+     grid-template-columns: 1fr;
+   }
 
   .#{$packageName}-main-content {
-    flex: 1;
-    padding-inline: 2rem;
+    padding-inline: 1rem;
     color: $text-white-dark-1;
     border-right: 1px solid $line-dark;
     border-left: 1px solid $line-dark;
@@ -56,7 +65,8 @@ $packageName: plog;
       border: 1px solid rgb(114, 114, 114);
       font-size: 1.2rem;
       border-radius: 0.5em;
-      width: 30rem;
+      width: 20rem;
+      max-width: 90%;
       overflow-x: scroll;
 
       .#{$packageName}-code {

@@ -24,20 +24,24 @@ defineProps<{
 <style scoped lang="scss">
 .container {
   color: $text-white-dark-1;
-  .sticky{
+
+  @media screen and (max-width: 700px) {
+    display: none;
+  }
+  .sticky {
     position: sticky;
     top: $app-header-height * 1.2;
 
-  .section-title {
-    font-size: 2rem;
-    font-weight: 700;
-    color: $text-white;
-  }
-  .item {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.3em;
+    .section-title {
+      font-size: 2rem;
+      font-weight: 700;
+      color: $text-white;
+    }
+    .item {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.3em;
+    }
   }
 }
-  }
 </style>
