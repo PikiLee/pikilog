@@ -1,86 +1,16 @@
 import { renderHtmlToVue } from "./../../markdownToVue";
 import { addClasses, render } from "../../markdownToVue";
 import { describe, expect, test } from "vitest";
-import { tmpdir } from "node:os";
-import * as fs from "node:fs";
-import * as path from "node:path";
-
-export type DirectryContent = (string | DirectoryStructure)[];
-
-export interface DirectoryStructure {
-  [index: string]: DirectryContent;
-}
-
-const createTemporaryDirectory = () => {
-  const temporaryDirectory = fs.mkdtempSync(path.join(tmpdir(), "plog-"));
-
-  const removeTemporaryDirectory = () => {
-    fs.rmSync(temporaryDirectory, { recursive: true });
-  };
-
-  return {
-    temporaryDirectory,
-    removeTemporaryDirectory,
-  };
-};
-
-const createFilesAndDirectories = (
-  parentDirectory: string,
-  FilesAndDirectories: DirectryContent
-) => {
-  if (!fs.existsSync(parentDirectory)) {
-    fs.mkdirSync(parentDirectory);
-  }
-
-  FilesAndDirectories.forEach((element) => {
-    if (typeof element === "string") {
-      fs.writeFileSync(path.join(parentDirectory, element), "");
-    } else {
-      const key = Object.keys(element)[0];
-      createFilesAndDirectories(path.join(parentDirectory, key), element[key]);
-    }
-  });
-};
-
-const createFilesAndDirectoriesInTemporaryDirectory = (
-  FilesAndDirectories: DirectryContent
-) => {
-  const { temporaryDirectory, removeTemporaryDirectory } =
-    createTemporaryDirectory();
-
-  createFilesAndDirectories(temporaryDirectory, FilesAndDirectories);
-
-  return { temporaryDirectory, removeTemporaryDirectory };
-};
-
-/**
- * get all file paths in a directory.
- * @param {string} directory
- * @return {DirectryContent}
- */
-export const getDirectoryContent = async (directory: string) => {
-  const directoyrContent: DirectryContent = [];
-  const directoryHandle = fs.opendirSync(directory);
-  for await (const dirent of directoryHandle) {
-    if (dirent.isFile()) {
-      directoyrContent.push(dirent.name);
-    } else if (dirent.isDirectory()) {
-      const content = await getDirectoryContent(
-        path.join(directory, dirent.name)
-      );
-      if (content)
-        directoyrContent.push({
-          [dirent.name]: content,
-        });
-    }
-  }
-  return directoyrContent;
-};
+import {
+  createTemporaryDirectory,
+  createFilesAndDirectoriesInTemporaryDirectory,
+  getDirectoryContent,
+} from "../testUtils";
 
 /**
  * Partition on html string:
  *  html string is empty
- *  html string is not empty and has no class 
+ *  html string is not empty and has no class
  *  html string is not empty and has class
  *
  * Partition on mappings:
@@ -98,7 +28,7 @@ describe("test add class to html string", () => {
   });
 
   test("Cover html string is not empty and has class and 0 < the number of mappings <= the number of tags in html string", () => {
-    const html = `<h1 class="title">I am Title</h1><h2>subtitle</h2>`
+    const html = `<h1 class="title">I am Title</h1><h2>subtitle</h2>`;
     const mappings = {
       h1: "head1",
       h2: "head2",
