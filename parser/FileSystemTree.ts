@@ -4,13 +4,6 @@ import * as fs from "node:fs";
 export type FileSystemNode = FileInterface | DirectoryInterface;
 export type NullableFileSystemNode = FileSystemNode | null | undefined;
 
-// export interface FileSystemTreeInterface {
-//   root: FileSystemNode;
-//   getRootNode(): FileSystemNode;
-//   setRootNode(node: FileSystemNode): void;
-//   tracerse(): Iterable<FileSystemNode>;
-// }
-
 export interface FileInterface {
   name: string;
   parent: NullableFileSystemNode;
@@ -19,7 +12,9 @@ export interface FileInterface {
   setParent(parent: FileSystemNode): void;
   getParent(): NullableFileSystemNode;
   getExtension(): string;
-  traverse(): Iterable<FileInterface>;
+  getPath(): string;
+  getDepth(): number;
+  [Symbol.iterator](): Iterator<FileInterface>;
 }
 
 export interface DirectoryInterface extends FileInterface {
@@ -27,7 +22,8 @@ export interface DirectoryInterface extends FileInterface {
   addChild(childNode: FileSystemNode): void;
   getChild(name: string): NullableFileSystemNode;
   removeChild(name: string): void;
-  traverse(): Iterable<FileSystemNode>;
+  getChildren(): FileSystemNode[];
+  [Symbol.iterator](): Iterator<FileSystemNode>;
 }
 
 export class File implements FileInterface {
@@ -57,7 +53,33 @@ export class File implements FileInterface {
   getExtension(): string {
     return nodePath.extname(this.name);
   }
-  *traverse(): Iterable<FileInterface> {
+
+  getPath(this: FileSystemNode): string {
+    let currentNode = this;
+    let path = currentNode.getName();
+    let parentNode = currentNode.getParent();
+    while (parentNode) {
+      currentNode = parentNode;
+      parentNode = currentNode.getParent();
+      path = nodePath.join(currentNode.getName(), path);
+    }
+    return path;
+  }
+
+  // The depth of the node, starts at 0
+  getDepth(this: FileSystemNode): number {
+    let depth = 0;
+    let currentNode = this;
+    let parentNode = currentNode.getParent()
+    while (parentNode) {
+      currentNode = parentNode 
+      parentNode = currentNode.getParent()
+      depth += 1;
+    }
+    return depth;
+  }
+
+  *[Symbol.iterator](): Iterator<FileInterface> {
     yield this;
   }
 }
@@ -77,10 +99,14 @@ export class Directory extends File implements DirectoryInterface {
     this.children = this.children.filter((child) => child.getName() !== name);
   }
 
-  *traverse(): Iterable<FileSystemNode> {
+  getChildren(): FileSystemNode[] {
+    return this.children;
+  }
+
+  *[Symbol.iterator](): Iterator<FileSystemNode> {
     yield this;
     for (let child of this.children) {
-      for (let node of child.traverse()) {
+      for (let node of child) {
         yield node;
       }
     }

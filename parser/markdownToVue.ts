@@ -1,10 +1,16 @@
-import type { Heading, DocSideBarConfig } from "./../types/doc";
+import { buildFileSystemTree, FileSystemNode, File } from "./FileSystemTree";
+import type {
+  Heading,
+  DocSideBarConfigItemList,
+  DocSideBarConfigMaps,
+  DocSideBarConfig,
+} from "./../types/doc";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import MarkdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
 import appConfig from "../plog.config";
-import * as lodash from "lodash";
+import lodash from "lodash";
 
 export interface Mappings {
   [index: string]: string;
@@ -30,15 +36,18 @@ export const addClasses = (html: string, mappings: Mappings) => {
 
     html = html.replaceAll(regex, (match) => {
       let addedClassMatch = match;
-      const classIndex = match.indexOf("class")
+      const classIndex = match.indexOf("class");
       if (classIndex !== -1) {
-        const insertClassIndex = 7 + classIndex
-        addedClassMatch = `${match.slice(0, insertClassIndex)}${escapedClass} ${match.slice(insertClassIndex)}`
-      } else {
-        const insertClassIndex = 1 + tag.length
+        const insertClassIndex = 7 + classIndex;
         addedClassMatch = `${match.slice(
           0,
-        insertClassIndex
+          insertClassIndex
+        )}${escapedClass} ${match.slice(insertClassIndex)}`;
+      } else {
+        const insertClassIndex = 1 + tag.length;
+        addedClassMatch = `${match.slice(
+          0,
+          insertClassIndex
         )} class="${escapedClass}"${match.slice(insertClassIndex)}`;
       }
       return addedClassMatch;
@@ -60,12 +69,12 @@ const wrapHtmlWithTag = (html: string, tag: string) => {
  * Render html to vue
  * @param {string} html
  * @param {Heading[]} headings
- * @param {DocSideBarConfig} sideBarConfig
+ * @param {DocSideBarConfigItemList} sideBarConfig
  */
 export const renderHtmlToVue = (
   html: string,
   headings: Heading[],
-  sideBarConfig?: DocSideBarConfig
+  sideBarConfig: DocSideBarConfig | null
 ) => {
   let vue = wrapHtmlWithTag(html, `div class="plog-main-content"`);
 
@@ -90,64 +99,161 @@ export const renderHtmlToVue = (
 };
 
 /**
+ * renderVueFile
+ *
+ */
+const renderVueFile = (
+  inputFile: string,
+  outputDirectory: string,
+  mappings: Mappings,
+  sideBarConfig: DocSideBarConfig | null
+) => {
+  const md = fs.readFileSync(inputFile).toString();
+
+  const headings: Heading[] = [];
+  const mdi = MarkdownIt().use(MarkdownItAnchor, {
+    callback: (token, info) => {
+      const heading = { ...info } as Heading;
+      heading.tag = token.tag;
+      headings.push(heading);
+    },
+  });
+  let html = mdi.render(md);
+  html = addClasses(html, mappings);
+
+  const vue = renderHtmlToVue(html, headings, sideBarConfig);
+
+  fs.writeFileSync(
+    path.join(
+      outputDirectory,
+      path.basename(inputFile, path.extname(inputFile)) + ".vue"
+    ),
+    vue
+  );
+};
+
+const removeHyphen = (str: string) => {
+  return str.replace("-", " ");
+};
+
+const removeExtension = (p: string) => {
+  return p.replace(path.extname(p), "");
+};
+
+const extractTitleFromFilename = (filename: string) => {
+  return removeHyphen(removeExtension(filename));
+};
+
+const isMarkDownFile = (fileNode: File) => {
+  return fileNode.getExtension() === ".md";
+};
+
+/**
+ * get sidebar config for the input node.
+ * If the directory was empty or did not contain any markdown file, the directory itself would not appear in sidebar config.
+ */
+export const getSideBarConfig = (fileSystemNode: FileSystemNode) => {
+  let sideBarConfig: DocSideBarConfig | null = null;
+  if ("children" in fileSystemNode) {
+    const config = {
+      text: extractTitleFromFilename(fileSystemNode.getName()),
+      items: [],
+    } as DocSideBarConfigItemList;
+    fileSystemNode.getChildren().forEach((childNode) => {
+      const childNodeConfig = getSideBarConfig(childNode);
+      if (childNodeConfig) config.items.push(childNodeConfig);
+    });
+
+    if (config.items.length > 0) sideBarConfig = config;
+  } else if (isMarkDownFile(fileSystemNode)) {
+    const sideBarConfigItem = {
+      text: extractTitleFromFilename(fileSystemNode.getName()),
+      link: removeExtension(fileSystemNode.getPath()),
+    };
+    sideBarConfig = sideBarConfigItem;
+  }
+
+  return sideBarConfig;
+};
+
+/**
+ * Find the input node's parent node that has a depth of 1, then get the parent node's sidebar config.
+ */
+export const getSideBarConfigBelowDepth1 = (
+  fileSystemNode: FileSystemNode,
+  sideBarConfigMaps: DocSideBarConfigMaps
+) => {
+  let sideBarConfig: DocSideBarConfig | null;
+  if (!fileSystemNode.getParent()) {
+    sideBarConfig = null;
+  } else {
+    let currentNode = fileSystemNode;
+    while (currentNode.getDepth() > 1) {
+      const parentNode = currentNode.getParent();
+      if (!parentNode) throw `Something wrong with the node ${currentNode}`;
+      currentNode = parentNode;
+    }
+
+    // check if config is already in sideBarConfigMaps
+    sideBarConfig = sideBarConfigMaps.get(currentNode) ?? null;
+
+    if (!sideBarConfig) {
+      sideBarConfig = getSideBarConfig(currentNode);
+      if (sideBarConfig) sideBarConfigMaps.set(currentNode, sideBarConfig);
+    }
+  }
+
+  return sideBarConfig;
+};
+
+/**
  * Render a directory of markdown files to .vue files
  * @param {string} markdownDirectory - the directory of markdown files
- * @param {string} outoutDirectory - the output directory that would contains the vue file rendered from the content of the input directory.
+ * @param {string} outoutDirectory - the output directory that would contain a directory with the same name as the markdown directory except all the files in the output direcotry had been rendered to vue files.
  * @param {Mappings} mappings - html tag to class mapping.
- * @param {DocSideBarConfig} sideBarConfig - optional, if not passed, it will find the sideBarConfig of the current markdown directory from plog.config.ts
  */
 export const render = async (
   markdownDirectory: string,
   outputDirectory: string,
-  mappings: Mappings,
-  sideBarConfig?: DocSideBarConfig
+  mappings: Mappings
 ) => {
-  const markdownDirectoryHandle = fs.opendirSync(markdownDirectory);
+  const markdownDirectoryName = path.basename(markdownDirectory);
+  const markdownDirectoryParent = path.dirname(markdownDirectory);
 
-  if (fs.existsSync(outputDirectory)) {
-    fs.rmSync(outputDirectory, {
-      recursive: true,
-    });
-  }
-  fs.mkdirSync(outputDirectory);
+  const markdownDirectoryNode = await buildFileSystemTree(
+    markdownDirectoryParent,
+    markdownDirectoryName
+  );
 
-  for await (let element of markdownDirectoryHandle) {
-    if (element.isFile() && path.extname(element.name) === ".md") {
-      const file = path.join(markdownDirectory, element.name);
-      const md = fs.readFileSync(file).toString();
+  const sideBarConfigMaps = new Map<FileSystemNode, DocSideBarConfig>();
 
-      const headings: Heading[] = [];
-      const mdi = MarkdownIt().use(MarkdownItAnchor, {
-        callback: (token, info) => {
-          const heading = { ...info } as Heading;
-          heading.tag = token.tag;
-          headings.push(heading);
-        },
-      });
-      let html = mdi.render(md);
-      html = addClasses(html, mappings);
-
-      const vue = renderHtmlToVue(html, headings, sideBarConfig);
-
-      fs.writeFileSync(
-        path.join(
-          outputDirectory,
-          path.basename(element.name, path.extname(element.name)) + ".vue"
-        ),
-        vue
-      );
-    } else if (element.isDirectory()) {
-      if (!sideBarConfig) {
-        sideBarConfig =
-          appConfig.sideBar[element.name as keyof typeof appConfig.sideBar];
+  for (const childNode of markdownDirectoryNode) {
+    if ("children" in childNode) {
+      // check if directory node
+      const outputPath = path.join(outputDirectory, childNode.getPath());
+      if (fs.existsSync(outputPath)) {
+        fs.rmSync(outputPath, { recursive: true });
+        fs.mkdirSync(outputPath);
+      } else {
+        fs.mkdirSync(outputPath);
       }
-
-      await render(
-        path.join(markdownDirectory, element.name),
-        path.join(outputDirectory, element.name),
-        mappings,
-        sideBarConfig
+      console.log(`Making directory: ${childNode.getName()}`);
+    } else if (childNode.getExtension() === ".md") {
+      // check if markdown file
+      const childNodePath = path.join(
+        markdownDirectoryParent,
+        childNode.getPath()
       );
+      const sideBarConfig = getSideBarConfigBelowDepth1(
+        childNode,
+        sideBarConfigMaps
+      );
+      const parentNode = childNode.getParent();
+      const outputPath = parentNode
+        ? path.join(outputDirectory, parentNode.getPath())
+        : outputDirectory;
+      renderVueFile(childNodePath, outputPath, mappings, sideBarConfig);
+      console.log(`Rendering markdown file: ${childNode.getName()}`);
     }
   }
 };

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import type { DocSideBarConfig } from "@/types/doc";
+import type { DocSideBarConfigItemList } from "@/types/doc";
 
 defineProps<{
-  config: DocSideBarConfig;
+  config: DocSideBarConfigItemList;
 }>();
 </script>
 

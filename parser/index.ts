@@ -23,8 +23,7 @@ for (let tag in mappings) {
 }
 
 const docsDirectory = "./docs";
-const outputDirectory = "./pages/docs";
-const appConfigPath = "./plog.config.ts";
+const outputDirectory = "./pages";
 
 const watch = (
   sources: string[],
@@ -40,7 +39,7 @@ const watch = (
 };
 
 watch(
-  [docsDirectory, appConfigPath],
+  [docsDirectory],
   () => {
     markdownToVue.render(docsDirectory, outputDirectory, mappings);
   },
