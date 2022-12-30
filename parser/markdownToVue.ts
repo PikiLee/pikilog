@@ -6,10 +6,9 @@ import type {
   DocSideBarConfig,
 } from "./../types/doc";
 import * as fs from "node:fs";
-import * as path from "node:path";
+import * as nodePath from "node:path";
 import MarkdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
-import appConfig from "../plog.config";
 import lodash from "lodash";
 
 export interface Mappings {
@@ -121,29 +120,30 @@ const renderVueFile = (
   let html = mdi.render(md);
   html = addClasses(html, mappings);
 
-  const title = extractTitleFromFilename(path.basename(inputFile))
+  const title = extractTitleFromFilename(nodePath.basename(inputFile))
 
   const vue = renderHtmlToVue(html, headings, sideBarConfig, title);
 
   fs.writeFileSync(
-    path.join(
+    nodePath.join(
       outputDirectory,
-      path.basename(inputFile, path.extname(inputFile)) + ".vue"
+      nodePath.basename(inputFile, nodePath.extname(inputFile)) + ".vue"
     ),
     vue
   );
 };
 
 const removeHyphen = (str: string) => {
-  return str.replace("-", " ");
+  return str.replaceAll("-", " ");
 };
 
-const removeExtension = (p: string) => {
-  return p.replace(path.extname(p), "");
+const removeExtension = (path: string) => {
+  const dotIndex = path.lastIndexOf(".")
+  return path.slice(0, dotIndex) + path.slice(dotIndex).replace(nodePath.extname(path), "")
 };
 
-const extractLinkFromPath = (p: string) => {
-  return "/" + removeExtension(p).replaceAll("\\", "/");
+const extractLinkFromPath = (path: string) => {
+  return "/" + removeExtension(path).replaceAll("\\", "/");
 }
 
 const extractTitleFromFilename = (filename: string) => {
@@ -223,8 +223,8 @@ export const render = async (
   outputDirectory: string,
   mappings: Mappings
 ) => {
-  const markdownDirectoryName = path.basename(markdownDirectory);
-  const markdownDirectoryParent = path.dirname(markdownDirectory);
+  const markdownDirectoryName = nodePath.basename(markdownDirectory);
+  const markdownDirectoryParent = nodePath.dirname(markdownDirectory);
 
   const markdownDirectoryNode = await buildFileSystemTree(
     markdownDirectoryParent,
@@ -236,7 +236,7 @@ export const render = async (
   for (const childNode of markdownDirectoryNode) {
     if ("children" in childNode) {
       // check if directory node
-      const outputPath = path.join(outputDirectory, childNode.getPath());
+      const outputPath = nodePath.join(outputDirectory, childNode.getPath());
       if (fs.existsSync(outputPath)) {
         fs.rmSync(outputPath, { recursive: true });
         fs.mkdirSync(outputPath);
@@ -246,7 +246,7 @@ export const render = async (
       console.log(`Making directory: ${childNode.getName()}`);
     } else if (childNode.getExtension() === ".md") {
       // check if markdown file
-      const childNodePath = path.join(
+      const childNodePath = nodePath.join(
         markdownDirectoryParent,
         childNode.getPath()
       );
@@ -256,7 +256,7 @@ export const render = async (
       );
       const parentNode = childNode.getParent();
       const outputPath = parentNode
-        ? path.join(outputDirectory, parentNode.getPath())
+        ? nodePath.join(outputDirectory, parentNode.getPath())
         : outputDirectory;
       renderVueFile(childNodePath, outputPath, mappings, sideBarConfig);
       console.log(`Rendering markdown file: ${childNode.getName()}`);
