@@ -77,7 +77,7 @@ describe("test add class to html string", () => {
 describe("test render html to vue.", () => {
   test("Cover html string, headings is empty, no sideBarConfig", () => {
     const html = "";
-    const vue = renderHtmlToVue(html, [], null);
+    const vue = renderHtmlToVue(html, [], null, "test-title");
     expect(vue).toMatch(
       /^<template>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
     );
@@ -94,9 +94,10 @@ describe("test render html to vue.", () => {
         ],
       },
     ];
-    const vue = renderHtmlToVue(html, [], { text: "doc", link: "doc" });
+    const vue = renderHtmlToVue(html, [], { text: "doc", link: "doc" }, "test-title");
+    console.log(vue)
     expect(vue).toMatch(
-      /^<template>.*<DocSideBarContainer :config="sideBarConfig" ><\/DocSideBarContainer>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
+      /^<template>.*<DocSideBarContainer :config="sideBarConfig" ><\/DocSideBarContainer>.*<h1 class="plog-doc-title">test-title<\/h1>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
     );
   });
 });

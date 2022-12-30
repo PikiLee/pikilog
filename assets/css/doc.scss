@@ -26,6 +26,12 @@ $packageName: plog;
     border-right: 1px solid $line-dark;
     border-left: 1px solid $line-dark;
 
+    .#{$packageName}-doc-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin: 0;
+    }
+
     @for $i from 1 through 6 {
       .#{$packageName}-heading#{$i} {
         color: $text-white;

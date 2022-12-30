@@ -67,16 +67,16 @@ const wrapHtmlWithTag = (html: string, tag: string) => {
 
 /**
  * Render html to vue
- * @param {string} html
- * @param {Heading[]} headings
- * @param {DocSideBarConfigItemList} sideBarConfig
  */
 export const renderHtmlToVue = (
   html: string,
   headings: Heading[],
-  sideBarConfig: DocSideBarConfig | null
+  sideBarConfig: DocSideBarConfig | null,
+  title: string
 ) => {
-  let vue = wrapHtmlWithTag(html, `div class="plog-main-content"`);
+  let vue = `<h1 class="plog-doc-title">${title}</h1>` + html
+
+  vue = wrapHtmlWithTag(vue, `div class="plog-main-content"`);
 
   if (sideBarConfig) {
     vue = `<DocSideBarContainer :config="sideBarConfig" ></DocSideBarContainer>` + vue;
@@ -121,7 +121,9 @@ const renderVueFile = (
   let html = mdi.render(md);
   html = addClasses(html, mappings);
 
-  const vue = renderHtmlToVue(html, headings, sideBarConfig);
+  const title = extractTitleFromFilename(path.basename(inputFile))
+
+  const vue = renderHtmlToVue(html, headings, sideBarConfig, title);
 
   fs.writeFileSync(
     path.join(

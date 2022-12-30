@@ -23,6 +23,7 @@ defineProps<{
   }
   .sticky {
     position: sticky;
+    margin:0;
     top: $app-header-height * 1.2;
   }
 }
