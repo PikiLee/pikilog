@@ -5,7 +5,7 @@
     <NuxtLink to="/" class="icon-area">
       <figure class="figure">
         <div class="icon-wrapper">
-          <img class="icon" src="~/assets/images/icon.jpg" alt="" />
+          <img class="icon" src="/images/icon.jpg" alt="icon" />
         </div>
         <caption class="title">
           Piki's Blog
