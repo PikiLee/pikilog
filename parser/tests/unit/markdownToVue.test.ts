@@ -96,7 +96,7 @@ describe("test render html to vue.", () => {
     ];
     const vue = renderHtmlToVue(html, [], { text: "doc", link: "doc" });
     expect(vue).toMatch(
-      /^<template>.*<DocSideBar :config="sideBarConfig" ><\/DocSideBar>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
+      /^<template>.*<DocSideBarContainer :config="sideBarConfig" ><\/DocSideBarContainer>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
     );
   });
 });

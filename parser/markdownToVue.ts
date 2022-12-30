@@ -79,7 +79,7 @@ export const renderHtmlToVue = (
   let vue = wrapHtmlWithTag(html, `div class="plog-main-content"`);
 
   if (sideBarConfig) {
-    vue = `<DocSideBar :config="sideBarConfig" ></DocSideBar>` + vue;
+    vue = `<DocSideBarContainer :config="sideBarConfig" ></DocSideBarContainer>` + vue;
   }
 
   vue += `<DocContentTable :headings="headings"></DocContentTable>`;
