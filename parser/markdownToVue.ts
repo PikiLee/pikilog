@@ -140,6 +140,10 @@ const removeExtension = (p: string) => {
   return p.replace(path.extname(p), "");
 };
 
+const extractLinkFromPath = (p: string) => {
+  return "/" + removeExtension(p).replaceAll("\\", "/");
+}
+
 const extractTitleFromFilename = (filename: string) => {
   return removeHyphen(removeExtension(filename));
 };
@@ -168,7 +172,7 @@ export const getSideBarConfig = (fileSystemNode: FileSystemNode) => {
   } else if (isMarkDownFile(fileSystemNode)) {
     const sideBarConfigItem = {
       text: extractTitleFromFilename(fileSystemNode.getName()),
-      link: removeExtension(fileSystemNode.getPath()),
+      link: extractLinkFromPath(fileSystemNode.getPath()),
     };
     sideBarConfig = sideBarConfigItem;
   }

@@ -138,18 +138,18 @@ describe("Test getSideBarConfig", () => {
       items: [
         {
           text: "file1 intro",
-          link: nodePath.join("doc", "file1-intro"),
+          link: "/doc/file1-intro",
         },
         {
           text: "file2",
-          link: nodePath.join("doc", "file2"),
+          link: "/doc/file2",
         },
         {
           text: "guide",
           items: [
             {
               text: "file3",
-              link: nodePath.join("doc", "guide", "file3"),
+              link: "/doc/guide/file3" ,
             },
           ],
         },
@@ -191,7 +191,7 @@ describe("Test getSideBarConfigBelowDepth1", () => {
       items: [
         {
           text: "file3",
-          link: nodePath.join("doc", "guide", "file3"),
+          link: "/doc/guide/file3",
         },
       ],
     });
@@ -207,7 +207,7 @@ describe("Test getSideBarConfigBelowDepth1", () => {
       items: [
         {
           text: "file3",
-          link: nodePath.join("doc", "guide", "file3"),
+          link: "/doc/guide/file3",
         },
       ],
     });

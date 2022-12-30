@@ -30,7 +30,7 @@ const leftPadding = computed(() => `${1 * Math.max(0, props.level - 1)}em`)
     <div class="separator" v-if="level !== 0"></div>
   </li>
   <li v-else class="item">
-    <a :href="config.link">{{ config.text }}</a>
+    <NuxtLink :to="config.link">{{ config.text }}</NuxtLink>
   </li>
 </template>
 
