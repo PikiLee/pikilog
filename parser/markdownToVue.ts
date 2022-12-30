@@ -7,6 +7,8 @@ import type {
 } from "./../types/doc";
 import * as fs from "node:fs";
 import * as nodePath from "node:path";
+import * as crypto from "node:crypto";
+import * as buffer from "node:buffer";
 import MarkdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
 import lodash from "lodash";
@@ -73,12 +75,14 @@ export const renderHtmlToVue = (
   sideBarConfig: DocSideBarConfig | null,
   title: string
 ) => {
-  let vue = `<h1 class="plog-doc-title">${title}</h1>` + html
+  let vue = `<h1 class="plog-doc-title">${title}</h1>` + html;
 
   vue = wrapHtmlWithTag(vue, `div class="plog-main-content"`);
 
   if (sideBarConfig) {
-    vue = `<DocSideBarContainer :config="sideBarConfig" ></DocSideBarContainer>` + vue;
+    vue =
+      `<DocSideBarContainer :config="sideBarConfig" ></DocSideBarContainer>` +
+      vue;
   }
 
   vue += `<DocContentTable :headings="headings"></DocContentTable>`;
@@ -98,12 +102,41 @@ export const renderHtmlToVue = (
 };
 
 /**
+ * Copy images referenced in vue to the specified directory, and update the link in vue file.
+ */
+export const rebaseImageLink = (
+  vueString: string,
+  markdownFile: string,
+  imageDirectory: string
+) => {
+  return vueString.replaceAll(/<img.*?src="(.*?)".*?\>/gs, (match, p1) => {
+    const imageFile = nodePath.resolve(
+      nodePath.normalize(nodePath.dirname(markdownFile)),
+      p1
+    );
+    const imageName = nodePath.basename(imageFile);
+    const idBuffer = buffer.Buffer.alloc(5);
+    crypto.randomFillSync(idBuffer, 0, 5);
+    const randomName = idBuffer.toString("hex") + imageName;
+    const imageDestination = nodePath.join(imageDirectory, randomName);
+    fs.copyFileSync(imageFile, imageDestination);
+
+    const index = imageDirectory.search(/assets.*/);
+    const prefix = imageDirectory.slice(index).replaceAll(nodePath.sep, "/");
+    const stringToReplace = `~/${prefix}/${randomName}`;
+    return match.replace(p1, stringToReplace);
+  });
+};
+
+/**
  * renderVueFile
- *
+ * @param {string} inputFile - a markdown file.
+ * @param {string} imageDirectory - must be a directory under assets, used for storing images in docs.
  */
 const renderVueFile = (
   inputFile: string,
   outputDirectory: string,
+  imageDirectory: string,
   mappings: Mappings,
   sideBarConfig: DocSideBarConfig | null
 ) => {
@@ -120,16 +153,18 @@ const renderVueFile = (
   let html = mdi.render(md);
   html = addClasses(html, mappings);
 
-  const title = extractTitleFromFilename(nodePath.basename(inputFile))
+  const title = extractTitleFromFilename(nodePath.basename(inputFile));
 
   const vue = renderHtmlToVue(html, headings, sideBarConfig, title);
+
+  const rebasedVue = rebaseImageLink(vue, inputFile, imageDirectory);
 
   fs.writeFileSync(
     nodePath.join(
       outputDirectory,
       nodePath.basename(inputFile, nodePath.extname(inputFile)) + ".vue"
     ),
-    vue
+    rebasedVue
   );
 };
 
@@ -138,13 +173,16 @@ const removeHyphen = (str: string) => {
 };
 
 const removeExtension = (path: string) => {
-  const dotIndex = path.lastIndexOf(".")
-  return path.slice(0, dotIndex) + path.slice(dotIndex).replace(nodePath.extname(path), "")
+  const dotIndex = path.lastIndexOf(".");
+  return (
+    path.slice(0, dotIndex) +
+    path.slice(dotIndex).replace(nodePath.extname(path), "")
+  );
 };
 
 const extractLinkFromPath = (path: string) => {
   return "/" + removeExtension(path).replaceAll("\\", "/");
-}
+};
 
 const extractTitleFromFilename = (filename: string) => {
   return removeHyphen(removeExtension(filename));
@@ -216,11 +254,13 @@ export const getSideBarConfigBelowDepth1 = (
  * Render a directory of markdown files to .vue files
  * @param {string} markdownDirectory - the directory of markdown files
  * @param {string} outoutDirectory - the output directory that would contain a directory with the same name as the markdown directory except all the files in the output direcotry had been rendered to vue files.
+ * @param {string} imageDirectory - must be a directory under assets, used for storing images in docs.
  * @param {Mappings} mappings - html tag to class mapping.
  */
 export const render = async (
   markdownDirectory: string,
   outputDirectory: string,
+  imageDirectory: string,
   mappings: Mappings
 ) => {
   const markdownDirectoryName = nodePath.basename(markdownDirectory);
@@ -230,6 +270,11 @@ export const render = async (
     markdownDirectoryParent,
     markdownDirectoryName
   );
+
+  if (fs.existsSync(imageDirectory)) {
+    fs.rmSync(imageDirectory, { recursive: true });
+  }
+  fs.mkdirSync(imageDirectory);
 
   const sideBarConfigMaps = new Map<FileSystemNode, DocSideBarConfig>();
 
@@ -258,7 +303,13 @@ export const render = async (
       const outputPath = parentNode
         ? nodePath.join(outputDirectory, parentNode.getPath())
         : outputDirectory;
-      renderVueFile(childNodePath, outputPath, mappings, sideBarConfig);
+      renderVueFile(
+        childNodePath,
+        outputPath,
+        imageDirectory,
+        mappings,
+        sideBarConfig
+      );
       console.log(`Rendering markdown file: ${childNode.getName()}`);
     }
   }

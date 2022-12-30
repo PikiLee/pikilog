@@ -1,11 +1,12 @@
 import { DocSideBarConfigMaps } from "./../../../types/doc";
-import { getSideBarConfigBelowDepth1 } from "./../../markdownToVue";
 import { Directory, File } from "./../../FileSystemTree";
 import {
   addClasses,
   render,
   renderHtmlToVue,
   getSideBarConfig,
+  rebaseImageLink,
+  getSideBarConfigBelowDepth1,
 } from "../../markdownToVue";
 import { describe, expect, test } from "vitest";
 import {
@@ -14,6 +15,7 @@ import {
   getDirectoryContent,
 } from "../testUtils";
 import * as nodePath from "node:path";
+import * as fs from "node:fs";
 
 /**
  * Partition on html string:
@@ -94,11 +96,62 @@ describe("test render html to vue.", () => {
         ],
       },
     ];
-    const vue = renderHtmlToVue(html, [], { text: "doc", link: "doc" }, "test-title");
-    console.log(vue)
+    const vue = renderHtmlToVue(
+      html,
+      [],
+      { text: "doc", link: "doc" },
+      "test-title"
+    );
     expect(vue).toMatch(
       /^<template>.*<DocSideBarContainer :config="sideBarConfig" ><\/DocSideBarContainer>.*<h1 class="plog-doc-title">test-title<\/h1>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
     );
+  });
+});
+
+/**
+ */
+describe("Test rebaseImageLink", () => {
+  test("Test rebaseImageLink", async () => {
+    const vueString = `<h1>hello world</h1><div><img src="./images/img.jpg"/></div>`;
+    const {
+      temporaryDirectory: docsDirectory,
+      removeTemporaryDirectory: removeDocsDirectory,
+    } = createFilesAndDirectoriesInTemporaryDirectory([
+      "test.md",
+      {
+        images: ["img.jpg"],
+      },
+    ]);
+    const markdownFile = nodePath.join(docsDirectory, "test.md");
+
+    const {
+      temporaryDirectory: imageParentDirectory,
+      removeTemporaryDirectory: removeImageParentDirectory,
+    } = createFilesAndDirectoriesInTemporaryDirectory([
+      {
+        assets: [{ images: [] }],
+      },
+    ]);
+    const imageDirectory = nodePath.join(
+      imageParentDirectory,
+      "assets",
+      "images"
+    );
+
+    try {
+      const resultString = rebaseImageLink(
+        vueString,
+        markdownFile,
+        imageDirectory
+      );
+      expect(resultString).toMatch(
+        /<h1>hello world<\/h1><div><img src="~\/assets\/images\/.*img.jpg"\/><\/div>/
+      );
+      expect((await getDirectoryContent(imageDirectory)).length).toBe(1);
+    } finally {
+      removeDocsDirectory();
+      removeImageParentDirectory();
+    }
   });
 });
 
@@ -150,7 +203,7 @@ describe("Test getSideBarConfig", () => {
           items: [
             {
               text: "file3",
-              link: "/doc/guide/file3" ,
+              link: "/doc/guide/file3",
             },
           ],
         },
@@ -241,7 +294,7 @@ describe("Test render a directory of markdown files to .vue files", () => {
       p: "paragraph",
     };
     try {
-      await render(docsDirectory, outputDirectory, mappings);
+      await render(docsDirectory, outputDirectory, outputDirectory, mappings);
       const outputDirectoryContent = await getDirectoryContent(outputDirectory);
       expect(outputDirectoryContent.length).toBe(1);
     } finally {
@@ -267,7 +320,7 @@ describe("Test render a directory of markdown files to .vue files", () => {
       p: "paragraph",
     };
     try {
-      await render(docsDirectory, outputDirectory, mappings);
+      await render(docsDirectory, outputDirectory, outputDirectory, mappings);
       const outputDirectoryContent = await getDirectoryContent(outputDirectory);
       expect(outputDirectoryContent).toStrictEqual([
         { [nodePath.basename(docsDirectory)]: ["file1.vue", "file2.vue"] },
@@ -299,7 +352,7 @@ describe("Test render a directory of markdown files to .vue files", () => {
       p: "paragraph",
     };
     try {
-      await render(docsDirectory, outputDirectory, mappings);
+      await render(docsDirectory, outputDirectory, outputDirectory, mappings);
       const outputDirectoryContent = await getDirectoryContent(outputDirectory);
       expect(outputDirectoryContent).toStrictEqual([
         {

@@ -24,6 +24,7 @@ for (let tag in mappings) {
 
 const docsDirectory = "./docs";
 const outputDirectory = "./pages";
+const imageDirectory = "./assets/images";
 
 const watch = (
   sources: string[],
@@ -41,7 +42,12 @@ const watch = (
 watch(
   [docsDirectory],
   () => {
-    markdownToVue.render(docsDirectory, outputDirectory, mappings);
+    markdownToVue.render(
+      docsDirectory,
+      outputDirectory,
+      imageDirectory,
+      mappings
+    );
   },
   true
 );
