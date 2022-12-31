@@ -24,7 +24,7 @@ defineProps<{
     color: $text-white;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     grid-template-rows: minmax(5rem, auto) minmax(3rem, auto);
-    width: min(90%, 30rem);
+    width: min(90%, 40rem);
     margin: auto;
     background-color: $bg-home-card;
     border-radius: 0.2em;

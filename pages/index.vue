@@ -12,7 +12,7 @@ const cardList = appConfig.home
 <style scoped lang="scss">
 
 .container {
-  width: min(30rem, 100%);
+  width: min(40rem, 100%);
   margin: auto;
   display: grid;
   grid-template-columns: 1fr;
