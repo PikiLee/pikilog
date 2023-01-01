@@ -1,14 +1,20 @@
-export default {
-  sideBar: {
-    guide: [
-      {
-        text: "Guide",
-        items: [
-          { text: "Introduction", link: "/docs/guide/introduction" },
-          { text: "Part1", link: "/docs/guide/part1" },
-        ],
-      },
-    ],
+import { AppConfig } from "./types/app";
+const appConfig: AppConfig = {
+  sidebar: {
+    guide: {
+      text: "Guide",
+      items: [
+        { text: "Introduction", link: "/docs/guide/introduction" },
+        { text: "part1 and good one", link: "/docs/guide/part1" },
+        {
+          text: "coll",
+          items: [
+            { text: "gool", link: "/docs/guide/coll/goll" },
+            { text: "why it is so good", link: "/docs/guide/coll/why" },
+          ],
+        },
+      ],
+    },
   },
   home: [
     {
@@ -25,3 +31,5 @@ export default {
     },
   ],
 };
+
+export default appConfig;

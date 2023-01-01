@@ -17,5 +17,3 @@ export interface DocSideBarConfigItem {
 }
 
 export type  DocSideBarConfig = DocSideBarConfigItem | DocSideBarConfigItemList 
-
-export type DocSideBarConfigMaps = Map<FileSystemNode, DocSideBarConfig>

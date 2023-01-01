@@ -1,4 +1,4 @@
-import { DocSideBarConfigMaps } from "./../../../types/doc";
+import { getDepth1ParentNode } from './../../markdownToVue';
 import { Directory, File } from "./../../FileSystemTree";
 import {
   addClasses,
@@ -6,7 +6,6 @@ import {
   renderHtmlToVue,
   getSideBarConfig,
   rebaseImageLink,
-  getSideBarConfigBelowDepth1,
 } from "../../markdownToVue";
 import { describe, expect, test } from "vitest";
 import {
@@ -79,7 +78,7 @@ describe("test add class to html string", () => {
 describe("test render html to vue.", () => {
   test("Cover html string, headings is empty, no sideBarConfig", () => {
     const html = "";
-    const vue = renderHtmlToVue(html, [], null, "test-title");
+    const vue = renderHtmlToVue(html, [], null);
     expect(vue).toMatch(
       /^<template>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
     );
@@ -99,11 +98,10 @@ describe("test render html to vue.", () => {
     const vue = renderHtmlToVue(
       html,
       [],
-      { text: "doc", link: "doc" },
-      "test-title"
+      { text: "doc", link: "doc" }
     );
     expect(vue).toMatch(
-      /^<template>.*<DocSideBarContainer :config="sideBarConfig" ><\/DocSideBarContainer>.*<h1 class="plog-doc-title">test-title<\/h1>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
+      /^<template>.*<DocSideBarContainer :config="sideBarConfig" ><\/DocSideBarContainer>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
     );
   });
 });
@@ -157,68 +155,11 @@ describe("Test rebaseImageLink", () => {
 
 /**
  * partition:
- *  The directory is empty
- *  The directory is not empty but does not contain markdown file
- *  The directory is not empty and contain markdown file
- */
-describe("Test getSideBarConfig", () => {
-  test("Cover the directory is empty.", () => {
-    const directoryNode = new Directory("doc");
-
-    const sideBarConfig = getSideBarConfig(directoryNode);
-    expect(sideBarConfig).toBe(null);
-  });
-
-  test("Cover The directory is not empty but does not contain markdown file", () => {
-    const directoryNode = new Directory("doc");
-    directoryNode.addChild(new File("file1.jpg"));
-    directoryNode.addChild(new File("file2.png"));
-
-    const sideBarConfig = getSideBarConfig(directoryNode);
-    expect(sideBarConfig).toBe(null);
-  });
-
-  test("Cover The directory is not empty and contains markdown file", () => {
-    const directoryNode = new Directory("doc");
-    directoryNode.addChild(new File("file1-intro.md"));
-    directoryNode.addChild(new File("file2.md"));
-    const childDirectoryNode = new Directory("guide");
-    directoryNode.addChild(childDirectoryNode);
-    childDirectoryNode.addChild(new File("file3.md"));
-
-    const sideBarConfig = getSideBarConfig(directoryNode);
-    expect(sideBarConfig).toMatchObject({
-      text: "doc",
-      items: [
-        {
-          text: "file1 intro",
-          link: "/doc/file1-intro",
-        },
-        {
-          text: "file2",
-          link: "/doc/file2",
-        },
-        {
-          text: "guide",
-          items: [
-            {
-              text: "file3",
-              link: "/doc/guide/file3",
-            },
-          ],
-        },
-      ],
-    });
-  });
-});
-
-/**
- * partition:
  *  The input node has a depth of 0
  *  The input node has a depth of 1
  *  The input node has a depth > 1
  */
-describe("Test getSideBarConfigBelowDepth1", () => {
+describe("Test getDepth1ParentNode", () => {
   const directoryNode = new Directory("doc");
   directoryNode.addChild(new File("file1-intro.md"));
   directoryNode.addChild(new File("file2.md"));
@@ -228,43 +169,24 @@ describe("Test getSideBarConfigBelowDepth1", () => {
   childDirectoryNode.addChild(file3Node);
 
   test("Cover the input node has depth of 0", () => {
-    const sideBarConfig = getSideBarConfigBelowDepth1(
+    const node = getDepth1ParentNode(
       directoryNode,
-      {} as DocSideBarConfigMaps
     );
-    expect(sideBarConfig).toBe(null);
+    expect(node).toBe(null);
   });
 
   test("Cover the input node has depth of 1", () => {
-    const sideBarConfig = getSideBarConfigBelowDepth1(
+    const node = getDepth1ParentNode(
       childDirectoryNode,
-      new Map() as DocSideBarConfigMaps
     );
-    expect(sideBarConfig).toMatchObject({
-      text: "guide",
-      items: [
-        {
-          text: "file3",
-          link: "/doc/guide/file3",
-        },
-      ],
-    });
+    expect(node).toMatchObject(childDirectoryNode);
   });
 
   test("Cover the input node has depth > 1", () => {
-    const sideBarConfig = getSideBarConfigBelowDepth1(
+    const node = getDepth1ParentNode(
       file3Node,
-      new Map() as DocSideBarConfigMaps
     );
-    expect(sideBarConfig).toMatchObject({
-      text: "guide",
-      items: [
-        {
-          text: "file3",
-          link: "/doc/guide/file3",
-        },
-      ],
-    });
+    expect(node).toMatchObject(childDirectoryNode);
   });
 });
 

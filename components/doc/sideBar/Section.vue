@@ -30,7 +30,7 @@ const leftPadding = computed(() => `${1 * Math.max(0, props.level - 1)}em`)
     <div class="separator" v-if="level !== 0"></div>
   </li>
   <li v-else class="item">
-    <NuxtLink :to="config.link">{{ config.text }}</NuxtLink>
+    <NuxtLink :to="config.link" active-class="text-green">{{ config.text }}</NuxtLink>
   </li>
 </template>
 
@@ -54,6 +54,10 @@ $font-weight: 600;
   font-size: v-bind("fontSize");
   margin-top: 0.5em;
   padding-left: v-bind("leftPadding");
+
+  .text-green {
+    color: $doc-link
+  }
 }
 
 

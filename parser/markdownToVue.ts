@@ -1,8 +1,6 @@
 import { buildFileSystemTree, FileSystemNode, File } from "./FileSystemTree";
 import type {
   Heading,
-  DocSideBarConfigItemList,
-  DocSideBarConfigMaps,
   DocSideBarConfig,
 } from "./../types/doc";
 import * as fs from "node:fs";
@@ -12,6 +10,7 @@ import * as buffer from "node:buffer";
 import MarkdownIt from "markdown-it";
 import MarkdownItAnchor from "markdown-it-anchor";
 import lodash from "lodash";
+import appConfig from "../plog.config";
 
 export interface Mappings {
   [index: string]: string;
@@ -73,9 +72,8 @@ export const renderHtmlToVue = (
   html: string,
   headings: Heading[],
   sideBarConfig: DocSideBarConfig | null,
-  title: string
 ) => {
-  let vue = `<h1 class="plog-doc-title">${title}</h1>` + html;
+  let vue = html;
 
   vue = wrapHtmlWithTag(vue, `div class="plog-main-content"`);
 
@@ -153,9 +151,7 @@ const renderVueFile = (
   let html = mdi.render(md);
   html = addClasses(html, mappings);
 
-  const title = extractTitleFromFilename(nodePath.basename(inputFile));
-
-  const vue = renderHtmlToVue(html, headings, sideBarConfig, title);
+  const vue = renderHtmlToVue(html, headings, sideBarConfig);
 
   const rebasedVue = rebaseImageLink(vue, inputFile, imageDirectory);
 
@@ -180,74 +176,35 @@ const removeExtension = (path: string) => {
   );
 };
 
-const extractLinkFromPath = (path: string) => {
-  return "/" + removeExtension(path).replaceAll("\\", "/");
-};
-
-const extractTitleFromFilename = (filename: string) => {
-  return removeHyphen(removeExtension(filename));
-};
-
-const isMarkDownFile = (fileNode: File) => {
-  return fileNode.getExtension() === ".md";
-};
-
 /**
- * get sidebar config for the input node.
- * If the directory was empty or did not contain any markdown file, the directory itself would not appear in sidebar config.
+ * get sidebar config for the input node from plog.config
  */
 export const getSideBarConfig = (fileSystemNode: FileSystemNode) => {
-  let sideBarConfig: DocSideBarConfig | null = null;
-  if ("children" in fileSystemNode) {
-    const config = {
-      text: extractTitleFromFilename(fileSystemNode.getName()),
-      items: [],
-    } as DocSideBarConfigItemList;
-    fileSystemNode.getChildren().forEach((childNode) => {
-      const childNodeConfig = getSideBarConfig(childNode);
-      if (childNodeConfig) config.items.push(childNodeConfig);
-    });
-
-    if (config.items.length > 0) sideBarConfig = config;
-  } else if (isMarkDownFile(fileSystemNode)) {
-    const sideBarConfigItem = {
-      text: extractTitleFromFilename(fileSystemNode.getName()),
-      link: extractLinkFromPath(fileSystemNode.getPath()),
-    };
-    sideBarConfig = sideBarConfigItem;
+  const depth1ParentNode = getDepth1ParentNode(fileSystemNode);
+  if (!depth1ParentNode) {
+    return null;
   }
-
+  const sideBarConfig = appConfig.sidebar[depth1ParentNode.getName()];
   return sideBarConfig;
 };
 
 /**
- * Find the input node's parent node that has a depth of 1, then get the parent node's sidebar config.
+ * Find the input node's parent node that has a depth of 1.
+ * If the input node's depth is 0, return null.
+ * If the input node's depth is 1, return the input node.
  */
-export const getSideBarConfigBelowDepth1 = (
-  fileSystemNode: FileSystemNode,
-  sideBarConfigMaps: DocSideBarConfigMaps
-) => {
-  let sideBarConfig: DocSideBarConfig | null;
+export const getDepth1ParentNode = (fileSystemNode: FileSystemNode) => {
   if (!fileSystemNode.getParent()) {
-    sideBarConfig = null;
-  } else {
-    let currentNode = fileSystemNode;
-    while (currentNode.getDepth() > 1) {
-      const parentNode = currentNode.getParent();
-      if (!parentNode) throw `Something wrong with the node ${currentNode}`;
-      currentNode = parentNode;
-    }
-
-    // check if config is already in sideBarConfigMaps
-    sideBarConfig = sideBarConfigMaps.get(currentNode) ?? null;
-
-    if (!sideBarConfig) {
-      sideBarConfig = getSideBarConfig(currentNode);
-      if (sideBarConfig) sideBarConfigMaps.set(currentNode, sideBarConfig);
-    }
+    return null;
   }
 
-  return sideBarConfig;
+  let currentNode = fileSystemNode;
+  while (currentNode.getDepth() > 1) {
+    const parentNode = currentNode.getParent();
+    if (!parentNode) throw `Something wrong with the node ${currentNode}`;
+    currentNode = parentNode;
+  }
+  return currentNode;
 };
 
 /**
@@ -276,8 +233,6 @@ export const render = async (
   }
   fs.mkdirSync(imageDirectory);
 
-  const sideBarConfigMaps = new Map<FileSystemNode, DocSideBarConfig>();
-
   for (const childNode of markdownDirectoryNode) {
     if ("children" in childNode) {
       // check if directory node
@@ -295,10 +250,7 @@ export const render = async (
         markdownDirectoryParent,
         childNode.getPath()
       );
-      const sideBarConfig = getSideBarConfigBelowDepth1(
-        childNode,
-        sideBarConfigMaps
-      );
+      const sideBarConfig = getSideBarConfig(childNode);
       const parentNode = childNode.getParent();
       const outputPath = parentNode
         ? nodePath.join(outputDirectory, parentNode.getPath())
