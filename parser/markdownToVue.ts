@@ -164,18 +164,6 @@ const renderVueFile = (
   );
 };
 
-const removeHyphen = (str: string) => {
-  return str.replaceAll("-", " ");
-};
-
-const removeExtension = (path: string) => {
-  const dotIndex = path.lastIndexOf(".");
-  return (
-    path.slice(0, dotIndex) +
-    path.slice(dotIndex).replace(nodePath.extname(path), "")
-  );
-};
-
 /**
  * get sidebar config for the input node from plog.config
  */
