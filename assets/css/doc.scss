@@ -25,6 +25,7 @@ $packageName: plog;
     color: $text-white-dark-1;
     border-right: 1px solid $line-dark;
     border-left: 1px solid $line-dark;
+    overflow: hidden;
 
     .#{$packageName}-doc-title {
       font-size: 3rem;
@@ -72,8 +73,7 @@ $packageName: plog;
       border: 1px solid rgb(114, 114, 114);
       font-size: 1.2rem;
       border-radius: 0.5em;
-      width: 40rem;
-      max-width: 90%;
+      width: min(90%, 40rem);
       overflow-x: scroll;
 
       .#{$packageName}-code {

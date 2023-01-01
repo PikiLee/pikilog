@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import type { DocSideBarConfig } from "@/types/doc";
+import { useMediaQuery } from "@vueuse/core"
 
 defineProps<{
   config: DocSideBarConfig;
 }>();
+
+const isPhone = useMediaQuery('(max-width: 700px)')
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" v-if="!isPhone">
     <ul class="sticky">
-      <DocSideBarSection :config="config" :level="0"/>
+      <DocSideBarSection :config="config" :level="0" />
     </ul>
   </div>
 </template>
@@ -18,12 +21,9 @@ defineProps<{
 .container {
   color: $text-white-dark-1;
 
-  @media screen and (max-width: 700px) {
-    display: none;
-  }
   .sticky {
     position: sticky;
-    margin:0;
+    margin: 0;
     top: $app-header-height * 1.2;
   }
 }

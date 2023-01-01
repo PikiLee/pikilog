@@ -1,22 +1,21 @@
 <script setup lang="ts">
 import type { Heading } from "@/types/doc";
+import { useMediaQuery } from "@vueuse/core"
 
 interface Props {
   headings: Heading[];
 }
 defineProps<Props>();
+
+const isPhone = useMediaQuery('(max-width: 1200px)')
 </script>
 
 <template>
-  <div class="content-table">
+  <div class="content-table" v-if="!isPhone">
     <div class="sticky">
       <header class="title">Table of Contents</header>
       <ul class="list">
-        <li
-          :class="[heading.tag, 'item']"
-          v-for="heading in headings"
-          :key="heading.slug"
-        >
+        <li :class="[heading.tag, 'item']" v-for="heading in headings" :key="heading.slug">
           <a :href="`#${heading.slug}`">{{ heading.title }}</a>
         </li>
       </ul>
@@ -28,9 +27,6 @@ defineProps<Props>();
 .content-table {
   color: $text-white-dark-1;
 
-  @media screen and (max-width: 1200px) {
-    display: none;
-  }
   .sticky {
     position: sticky;
     top: $app-header-height * 1.2;
@@ -40,6 +36,7 @@ defineProps<Props>();
       font-weight: 600;
       color: $text-white;
     }
+
     .list {
       top: 0;
       left: 0;
