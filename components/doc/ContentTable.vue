@@ -7,11 +7,11 @@ interface Props {
 }
 defineProps<Props>();
 
-const isPhone = useMediaQuery('(max-width: 1200px)')
+const isPad = useMediaQuery('(max-width: 1200px)')
 </script>
 
 <template>
-  <div class="content-table" v-if="!isPhone">
+  <div class="content-table" v-if="!isPad">
     <div class="sticky">
       <header class="title">Table of Contents</header>
       <ul class="list">
