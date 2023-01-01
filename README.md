@@ -46,6 +46,7 @@ Add markdown file in _docs_ directory
 ## Blog Group
 
 - The blogs in the same child directory of _doc_ are consider a group.
+- Blogs in a group share the same sidebar.
 
 # Configuarations
 
@@ -53,8 +54,8 @@ In plog.config.ts
 
 ## SideBar
 
-- Use `sidebar` property to set blog groups structure.
-+ A group can contains nested sections and blogs.
+- Use `sidebar` property to set sidebar structure for every blog group.
+- A group can contains nested sections and blogs.
 
 ### Example
 ```javascript
