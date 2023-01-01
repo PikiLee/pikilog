@@ -7,7 +7,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "test:parser": "vitest -w --dir parser",
-    "watch": "nr compile:parser && nr watch:docs",
+    "watch": "npm run compile:parser && npm run watch:docs",
     "watch:docs": "node parser/dist/parser/index.js",
     "compile:parser": "cd ./parser && tsc"
   },
