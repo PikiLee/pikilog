@@ -7,7 +7,7 @@ const props = defineProps<{
 }>();
 
 const fontSize = computed(() => {
-  const fontSize = Math.max(0, 2 - props.level * 0.5);
+  const fontSize = Math.max(0, 1.2 - props.level * 0.2);
   return `${fontSize}rem`;
 });
 

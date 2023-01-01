@@ -1,23 +1,25 @@
 @use "sass:color";
 $packageName: plog;
+$sideWidth: 14rem;
 
 .#{$packageName}-doc-container {
   display: grid;
-  grid-template-columns: 10rem 1fr 10rem;
+  grid-template-columns: $sideWidth 1fr $sideWidth;
   align-items: stretch;
   justify-content: center;
   gap: 3rem;
-  width: min(100%, 1300px);
+  width: min(100%, 1500px);
   margin: auto;
-  margin-top: 2em;
+  margin-top: 1em;
   padding-inline: 2rem;
 
   @media screen and (max-width: 1200px) {
-    grid-template-columns: 10rem 1fr;
+    grid-template-columns: $sideWidth 1fr;
   }
 
   @media screen and (max-width: 700px) {
     grid-template-columns: 1fr;
+    padding-inline: 0.1em;
   }
 
   .#{$packageName}-main-content {
@@ -38,7 +40,7 @@ $packageName: plog;
         color: $text-white;
         font-size: 2.5rem - (0.4rem * $i);
         font-weight: 900;
-        margin-top: 2em - (0.3em * $i);
+        margin-top: 1em - (0.1em * $i);
       }
     }
 
@@ -95,6 +97,7 @@ $packageName: plog;
 
     .#{$packageName}-image {
       display: block;
+      padding-block: 1rem;
       max-width: 100%;
     }
 

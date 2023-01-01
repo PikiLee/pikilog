@@ -42,7 +42,7 @@ const isPhone = useMediaQuery('(max-width: 1200px)')
       left: 0;
       position: sticky;
       $base-padding-left: 1rem;
-      $base-font-size: 1.2rem;
+      $base-font-size: 1.3rem;
 
       .item {
         margin-bottom: 0.3em;
