@@ -1,15 +1,21 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-    pages: true,
-    css: [
-        '@/assets/css/index.scss',
-        '@/assets/css/doc.scss',
-    ],
-    vite: {
-        css: {
-            preprocessorOptions: {
-                scss: {
-                    additionalData: `
+  app: {
+    head: {
+      charset: "utf-8",
+      viewport: "width=device-width, initial-scale=1",
+      title: "Piki's Blog",
+      meta: [{ name: "description", content: "Piki's blog." }],
+      link: [{ rel: "icon", type: "image/x-icon", href: "/images/icon.jpg" }],
+    },
+  },
+  pages: true,
+  css: ["@/assets/css/index.scss", "@/assets/css/doc.scss"],
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `
                     $bg-dark: #1D1D1D;
                     $text-white: #FFFFFF;
                     $text-white-dark-1: #E9E9E9;
@@ -18,9 +24,9 @@ export default defineNuxtConfig({
                     $bg-doc-quote: rgb(90, 133, 26);
                     $bg-home-card: #2D2D2D;
                     $app-header-height: 4rem;
-                    `
-                }
-            }
-        }
-    }
-})
+                    `,
+        },
+      },
+    },
+  },
+});
