@@ -1,5 +1,6 @@
 import * as markdownToVue from "./markdownToVue";
 import * as fs from "node:fs";
+import * as process from "node:process";
 
 const mappings: markdownToVue.Mappings = {
   h1: "heading1",
@@ -56,5 +57,14 @@ const renderCallback = async () => {
 };
 
 let isRendering = false;
-
-watch([docsDirectory], renderCallback, true);
+const argv = process.argv;
+if ("-w" in argv || "--watch" in argv) {
+  watch([docsDirectory], renderCallback, true);
+} else {
+  markdownToVue.render(
+    docsDirectory,
+    outputDirectory,
+    imageDirectory,
+    mappings
+  );
+}

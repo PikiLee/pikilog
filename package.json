@@ -1,14 +1,14 @@
 {
   "private": true,
   "scripts": {
-    "build": "nuxt build",
+    "build": "npm run compile:parser && npm run render && nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "test:parser": "vitest -w --dir parser",
-    "watch": "npm run compile:parser && npm run watch:docs",
-    "watch:docs": "node parser/dist/parser/index.js",
+    "render": "node parser/dist/parser/index.js",
+    "watch": "npm run compile:parser && node -w parser/dist/parser/index.js",
     "compile:parser": "cd ./parser && tsc"
   },
   "devDependencies": {
