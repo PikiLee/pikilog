@@ -19,7 +19,7 @@ npm install
 pnpm install --shamefully-hoist
 ```
 
-## Run markdown parser
+## Parse markdown
 
 ```bash
 npm run watch
