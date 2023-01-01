@@ -104,7 +104,7 @@ const appConfig: AppConfig = {
     {
       text: "blog1",
       link: "/docs/blog1",
-      createdAt: "2023-1-1T18:40", 
+      createdAt: "2023-1-1T18:40+08:00", 
       cover: "/images/blog1.png",
     },
   ],

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import * as dayjs from "dayjs"
-import relativeTime from 'dayjs/plugin/relativeTime'
+import dayjs from "dayjs/esm"
+import relativeTime from 'dayjs/esm/plugin/relativeTime'
 import type { HomeCard } from "@/types/home";
 dayjs.extend(relativeTime)
 
