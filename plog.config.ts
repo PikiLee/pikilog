@@ -10,7 +10,7 @@ const appConfig: AppConfig = {
     {
       text: "How to buy a domain in Namecheap?",
       link: "/docs/domain/buy-domain",
-      createdAt: "2023-1-1T10:40",
+      createdAt: "2023-01-01T18:40+08:00",
       cover: "/images/namecheap.png",
     },
   ],

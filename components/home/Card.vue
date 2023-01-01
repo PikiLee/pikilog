@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import * as dayjs from "dayjs"
 import relativeTime from 'dayjs/plugin/relativeTime'
-import utc from 'dayjs/plugin/utc'
 import type { HomeCard } from "@/types/home";
 dayjs.extend(relativeTime)
-dayjs.extend(utc)
 
 
 defineProps<{
@@ -12,11 +10,11 @@ defineProps<{
 }>();
 
 function getFormatedTime(time: string) {
-  const timeObj = dayjs.utc(time)
+  const timeObj = dayjs(time)
   const now = dayjs()
 
   if (timeObj.diff(now, "day") < 7) return timeObj.fromNow()
-  return timeObj.local().format("YYYY-MM-DD")
+  return timeObj.format("YYYY-MM-DD")
 }
 
 </script>
