@@ -1,6 +1,8 @@
-# Nuxt 3 Minimal Starter
+# My blog website.
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
++ Write markdown
++ Parse markdown to vue SFC
++ Based on Nuxt3
 
 ## Setup
 
@@ -15,6 +17,11 @@ npm install
 
 # pnpm
 pnpm install --shamefully-hoist
+```
+
+## Run markdown parser
+```bash
+npm run watch
 ```
 
 ## Development Server
@@ -38,5 +45,3 @@ Locally preview production build:
 ```bash
 npm run preview
 ```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
