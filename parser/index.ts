@@ -39,15 +39,22 @@ const watch = (
   });
 };
 
-watch(
-  [docsDirectory],
-  () => {
-    markdownToVue.render(
+const renderCallback = async () => {
+  if (isRendering) {
+    console.log("Is already rendering. Waiting for rerender.");
+    setTimeout(renderCallback, 1000);
+  } else {
+    isRendering = true;
+    await markdownToVue.render(
       docsDirectory,
       outputDirectory,
       imageDirectory,
       mappings
     );
-  },
-  true
-);
+    isRendering = false;
+  }
+};
+
+let isRendering = false;
+
+watch([docsDirectory], renderCallback, true);
