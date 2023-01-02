@@ -17,8 +17,10 @@ const isDark = useDark()
         </caption>
       </figure>
     </NuxtLink>
-    <div>
-      <ElSwitch v-model="isDark" style="--el-switch-on-color: gray; --el-switch-off-color: black" />
+    <div class="actions">
+      <div></div>
+      <ElSwitch v-model="isDark" style="--el-switch-on-color: black; --el-switch-off-color: gray" />
+      <div></div>
     </div>
   </div>
 </template>
@@ -70,6 +72,11 @@ html {
           justify-self: flex-start;
         }
       }
+    }
+
+    .actions {
+      display: grid;
+      grid-template-columns: 4fr max-content 1fr;
     }
   }
 
