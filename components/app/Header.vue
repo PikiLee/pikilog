@@ -1,4 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { useDark } from "@vueuse/core";
+import { ElSwitch } from "element-plus"
+
+const isDark = useDark()
+</script>
 <template>
   <div class="header">
     <div></div>
@@ -12,7 +17,9 @@
         </caption>
       </figure>
     </NuxtLink>
-    <div></div>
+    <div>
+      <ElSwitch v-model="isDark"  style="--el-switch-on-color: gray; --el-switch-off-color: black"/>
+    </div>
   </div>
 </template>
 
@@ -28,7 +35,7 @@
   margin-bottom: 4rem;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px,
     rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  
+
 
   .icon-area {
     .figure {
@@ -39,6 +46,7 @@
       font-size: 1.3rem;
       font-weight: 700;
       margin: 0;
+
       .icon-wrapper {
         $icon-size: $app-header-height * 0.7;
         width: $icon-size;

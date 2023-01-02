@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+const lifecycle = process.env.npm_lifecycle_event;
 export default defineNuxtConfig({
   app: {
     head: {
@@ -29,4 +31,11 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  // build
+  build: {
+    transpile: lifecycle === "build" ? ["element-plus"] : [],
+  },
+  // build modules
+  buildModules: ["nuxt-windicss"],
 });
