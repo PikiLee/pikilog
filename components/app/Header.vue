@@ -21,7 +21,7 @@ const isDark = useDark()
       <div></div>
       <div class="main">
         <ElSwitch v-model="isDark" style="--el-switch-on-color: black; --el-switch-off-color: gray" />
-        <NuxtLink to="https://github.com/luckypeppa/plog">
+        <NuxtLink to="https://github.com/PikiLee/pikilog">
           <ElAvatar :size="20" src="/images/github-mark.png" />
         </NuxtLink>
       </div>
