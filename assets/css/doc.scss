@@ -2,126 +2,137 @@
 $packageName: plog;
 $sideWidth: 14rem;
 
-.#{$packageName}-doc-container {
-  display: grid;
-  grid-template-columns: $sideWidth 1fr $sideWidth;
-  align-items: stretch;
-  justify-content: center;
-  gap: 3rem;
-  width: min(100%, 1500px);
-  margin: auto;
-  margin-top: 1em;
-  padding-inline: 2rem;
+html {
+  .#{$packageName}-doc-container {
+    display: grid;
+    grid-template-columns: $sideWidth 1fr $sideWidth;
+    align-items: stretch;
+    justify-content: center;
+    gap: 3rem;
+    width: min(100%, 1500px);
+    margin: auto;
+    margin-top: 1em;
+    padding-inline: 2rem;
+    color: $text-dark;
 
-  @media screen and (max-width: 1200px) {
-    grid-template-columns: $sideWidth 1fr;
-  }
-
-  @media screen and (max-width: 700px) {
-    grid-template-columns: 1fr;
-    padding-inline: 0.1em;
-  }
-
-  .#{$packageName}-main-content {
-    padding-inline: 3em;
-    color: $text-white-dark-1;
-    border-right: 1px solid $line-dark;
-    border-left: 1px solid $line-dark;
-    overflow: hidden;
-
-    .#{$packageName}-doc-title {
-      font-size: 3rem;
-      font-weight: 800;
-      margin: 0;
+    @media screen and (max-width: 1200px) {
+      grid-template-columns: $sideWidth 1fr;
     }
 
-    @for $i from 1 through 6 {
-      .#{$packageName}-heading#{$i} {
-        color: $text-white;
-        font-size: 2.5rem - (0.4rem * $i);
-        font-weight: 900;
-        margin-top: 1em - (0.1em * $i);
+    @media screen and (max-width: 700px) {
+      grid-template-columns: 1fr;
+      padding-inline: 0.1em;
+    }
+
+    .#{$packageName}-main-content {
+      padding-inline: 3em;
+      border-right: 1px solid $line-dark;
+      border-left: 1px solid $line-dark;
+      overflow: hidden;
+
+      .#{$packageName}-doc-title {
+        font-size: 3rem;
+        font-weight: 800;
+        margin: 0;
       }
-    }
 
-    .#{$packageName}-unordered-list {
-      list-style-type: "\2B50";
-      list-style-position: inside;
-
-      li {
-        padding-left: 0.5em;
+      @for $i from 1 through 6 {
+        .#{$packageName}-heading#{$i} {
+          font-size: 2.5rem - (0.4rem * $i);
+          font-weight: 900;
+          margin-top: 1em - (0.1em * $i);
+        }
       }
-    }
 
-    .#{$packageName}-ordered-list {
-      list-style-position: inside;
-      padding-left: 0;
+      .#{$packageName}-unordered-list {
+        list-style-type: "\2B50";
+        list-style-position: inside;
 
-      li {
-        padding-left: 0.8em;
+        li {
+          padding-left: 0.5em;
+        }
       }
-    }
 
-    .#{$packageName}-code {
-      background-color: rgb(98, 98, 98);
-      padding: 0.3em 0.5em;
-      font-weight: 700;
-      border-radius: 2em;
-    }
-    .#{$packageName}-code-block {
-      background-color: rgb(65, 65, 65);
-      padding: 1em;
-      font-weight: 700;
-      border: 1px solid rgb(114, 114, 114);
-      font-size: 1.2rem;
-      border-radius: 0.5em;
-      width: min(90%, 40rem);
-      overflow-x: scroll;
+      .#{$packageName}-ordered-list {
+        list-style-position: inside;
+        padding-left: 0;
+
+        li {
+          padding-left: 0.8em;
+        }
+      }
 
       .#{$packageName}-code {
-        background-color: transparent;
-        padding: 0;
-        font-weight: inherit;
-        border-radius: 0;
+        background-color: rgb(98, 98, 98);
+        padding: 0.3em 0.5em;
+        font-weight: 700;
+        border-radius: 2em;
       }
-
-      &::-webkit-scrollbar {
-        height: 0.4em;
-      }
-      &::-webkit-scrollbar-thumb {
-        height: 100%;
-        background-color: rgb(50, 50, 50);
+      .#{$packageName}-code-block {
+        background-color: rgb(65, 65, 65);
+        padding: 1em;
+        font-weight: 700;
+        border: 1px solid rgb(114, 114, 114);
+        font-size: 1.2rem;
         border-radius: 0.5em;
+        width: min(90%, 40rem);
+        overflow-x: scroll;
+
+        .#{$packageName}-code {
+          background-color: transparent;
+          padding: 0;
+          font-weight: inherit;
+          border-radius: 0;
+        }
+
+        &::-webkit-scrollbar {
+          height: 0.4em;
+        }
+        &::-webkit-scrollbar-thumb {
+          height: 100%;
+          background-color: rgb(50, 50, 50);
+          border-radius: 0.5em;
+        }
+      }
+
+      .#{$packageName}-image {
+        display: block;
+        padding-block: 1rem;
+        max-width: 100%;
+      }
+
+      .#{$packageName}-link {
+        color: $doc-link-dark;
+        text-decoration: underline;
+      }
+
+      .#{$packageName}-quote {
+        background-color: color.adjust($bg-doc-quote, $alpha: -0.7);
+        border-radius: 0.3em;
+
+        p {
+          position: relative;
+
+          padding: 1em 3em;
+
+          &::after {
+            content: "💡";
+            position: absolute;
+            top: 50%;
+            left: 0.6em;
+            transform: translateY(-50%);
+          }
+        }
       }
     }
+  }
 
-    .#{$packageName}-image {
-      display: block;
-      padding-block: 1rem;
-      max-width: 100%;
-    }
+  &.dark {
+    .#{$packageName}-doc-container {
+      color: $text-light;
 
-    .#{$packageName}-link {
-      color: $doc-link;
-      text-decoration: underline;
-    }
-
-    .#{$packageName}-quote {
-      background-color: color.adjust($bg-doc-quote, $alpha: -0.7);
-      border-radius: 0.3em;
-
-      p {
-        position: relative;
-
-        padding: 1em 3em;
-
-        &::after {
-          content: "💡";
-          position: absolute;
-          top: 50%;
-          left: 0.6em;
-          transform: translateY(-50%);
-        }
+      .#{$packageName}-link {
+        color: $doc-link-light;
       }
     }
   }

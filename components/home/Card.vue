@@ -31,15 +31,16 @@ function getFormatedTime(time: string) {
 </template>
 
 <style scoped lang="scss">
+html {
+
 .card {
   $intro-padding-left: 1rem;
   display: grid;
-  color: $text-white;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   grid-template-rows: minmax(5rem, auto) minmax(3rem, auto);
   width: min(90%, 40rem);
   margin: auto;
-  background-color: $bg-home-card;
+  background-color: $bg-home-card-light;
   border-radius: 0.2em;
   overflow: hidden;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
@@ -69,11 +70,16 @@ function getFormatedTime(time: string) {
 
   .time {
     font-size: 0.7rem;
-    color: $text-white-dark-1;
     align-self: center;
     padding: $intro-padding-left;
     display: grid;
     align-items: center;
   }
+}
+ &.dark {
+  .card {
+    background-color: $bg-home-card-dark;
+  }
+ }
 }
 </style>

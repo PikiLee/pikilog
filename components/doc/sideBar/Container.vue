@@ -18,13 +18,12 @@ const isPhone = useMediaQuery('(max-width: 700px)')
 </template>
 
 <style scoped lang="scss">
-.container {
-  color: $text-white-dark-1;
+  .container {
 
-  .sticky {
-    position: sticky;
-    margin: 0;
-    top: $app-header-height * 1.2;
+    .sticky {
+      position: sticky;
+      margin: 0;
+      top: $app-header-height * 1.2;
+    }
   }
-}
 </style>

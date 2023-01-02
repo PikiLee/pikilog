@@ -16,7 +16,7 @@ const isPad = useMediaQuery('(max-width: 1200px)')
       <header class="title">Table of Contents</header>
       <ul class="list">
         <li :class="[heading.tag, 'item']" v-for="heading in headings" :key="heading.slug">
-          <a :href="`#${heading.slug}`">{{ heading.title }}</a>
+          <NuxtLink :to="`#${heading.slug}`">{{ heading.title }}</NuxtLink>
         </li>
       </ul>
     </div>
@@ -25,7 +25,6 @@ const isPad = useMediaQuery('(max-width: 1200px)')
 
 <style scoped lang="scss">
 .content-table {
-  color: $text-white-dark-1;
 
   .sticky {
     position: sticky;
@@ -34,7 +33,6 @@ const isPad = useMediaQuery('(max-width: 1200px)')
     .title {
       font-size: 1.5rem;
       font-weight: 600;
-      color: $text-white;
     }
 
     .list {
