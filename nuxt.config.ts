@@ -19,12 +19,16 @@ export default defineNuxtConfig({
         scss: {
           additionalData: `
                     $bg-dark: #1D1D1D;
-                    $text-white: #FFFFFF;
-                    $text-white-dark-1: #E9E9E9;
+                    $bg-light: #E9E9E9;
+                    $text-light: #E9E9E9;
+                    $text-dark: #000000;
+                    $line-light: #CDCDCD;
                     $line-dark: #6D6D6D;
-                    $doc-link: greenyellow;
+                    $doc-link-light: greenyellow;
+                    $doc-link-dark: green;
                     $bg-doc-quote: rgb(90, 133, 26);
-                    $bg-home-card: #2D2D2D;
+                    $bg-home-card-light: #FFFFFF;
+                    $bg-home-card-dark: #2D2D2D;
                     $app-header-height: 4rem;
                     `,
         },

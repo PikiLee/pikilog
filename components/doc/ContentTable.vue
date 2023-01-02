@@ -25,7 +25,6 @@ const isPad = useMediaQuery('(max-width: 1200px)')
 
 <style scoped lang="scss">
 .content-table {
-  color: $text-white-dark-1;
 
   .sticky {
     position: sticky;
@@ -34,7 +33,6 @@ const isPad = useMediaQuery('(max-width: 1200px)')
     .title {
       font-size: 1.5rem;
       font-weight: 600;
-      color: $text-white;
     }
 
     .list {

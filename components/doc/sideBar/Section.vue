@@ -20,12 +20,7 @@ const leftPadding = computed(() => `${1 * Math.max(0, props.level - 1)}em`)
       {{ config.text }}
     </header>
     <ul>
-      <DocSideBarSection
-        :config="item"
-        :level="level + 1"
-        v-for="item in config.items"
-        :key="item.text"
-      />
+      <DocSideBarSection :config="item" :level="level + 1" v-for="item in config.items" :key="item.text" />
     </ul>
     <div class="separator" v-if="level !== 0"></div>
   </li>
@@ -37,28 +32,36 @@ const leftPadding = computed(() => `${1 * Math.max(0, props.level - 1)}em`)
 <style scoped lang="scss">
 $font-weight: 600;
 
-.list {
-  margin-top: v-bind("level === 0 ? 0 : '1em'");
-  font-weight: $font-weight;
-  font-size: v-bind("fontSize");
+html {
 
-  .separator {
-    height: 1px;
-    background-color: green;
-    margin-top: 1em;
+  .list {
+    margin-top: v-bind("level === 0 ? 0 : '1em'");
+    font-weight: $font-weight;
+    font-size: v-bind("fontSize");
+
+    .separator {
+      height: 1px;
+      background-color: green;
+      margin-top: 1em;
+    }
+  }
+
+  .item {
+    font-weight: $font-weight;
+    font-size: v-bind("fontSize");
+    margin-top: 0.5em;
+    padding-left: v-bind("leftPadding");
+
+    .text-green {
+      color: $doc-link-dark
+    }
+
+  }
+
+  &.dark {
+    .text-green {
+      color: $doc-link-dark
+    }
   }
 }
-
-.item {
-  font-weight: $font-weight;
-  font-size: v-bind("fontSize");
-  margin-top: 0.5em;
-  padding-left: v-bind("leftPadding");
-
-  .text-green {
-    color: $doc-link
-  }
-}
-
-
 </style>
