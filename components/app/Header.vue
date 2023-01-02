@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useDark } from "@vueuse/core";
-import { ElSwitch } from "element-plus"
+import { ElSwitch, ElAvatar } from "element-plus"
 
 const isDark = useDark()
 </script>
@@ -19,7 +19,12 @@ const isDark = useDark()
     </NuxtLink>
     <div class="actions">
       <div></div>
-      <ElSwitch v-model="isDark" style="--el-switch-on-color: black; --el-switch-off-color: gray" />
+      <div class="main">
+        <ElSwitch v-model="isDark" style="--el-switch-on-color: black; --el-switch-off-color: gray" />
+        <NuxtLink to="https://github.com/luckypeppa/plog">
+          <ElAvatar :size="20" src="/images/github-mark.png" />
+        </NuxtLink>
+      </div>
       <div></div>
     </div>
   </div>
@@ -77,6 +82,14 @@ html {
     .actions {
       display: grid;
       grid-template-columns: 4fr max-content 1fr;
+      height: 100%;
+
+      .main {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1em;
+        align-items: center;
+      }
     }
   }
 
