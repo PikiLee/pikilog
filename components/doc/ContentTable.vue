@@ -16,7 +16,7 @@ const isPad = useMediaQuery('(max-width: 1200px)')
       <header class="title">Table of Contents</header>
       <ul class="list">
         <li :class="[heading.tag, 'item']" v-for="heading in headings" :key="heading.slug">
-          <a :href="`#${heading.slug}`">{{ heading.title }}</a>
+          <NuxtLink :to="`#${heading.slug}`">{{ heading.title }}</NuxtLink>
         </li>
       </ul>
     </div>
