@@ -1,20 +1,20 @@
 <script setup lang="ts">
 import dayjs from "dayjs/esm"
-import relativeTime from 'dayjs/esm/plugin/relativeTime'
-import type { HomeCard } from "@/types/home";
+import relativeTime from "dayjs/esm/plugin/relativeTime"
+import type { HomeCard } from "@/types/home"
 dayjs.extend(relativeTime)
 
 
 defineProps<{
   card: HomeCard
-}>();
+}>()
 
 function getFormatedTime(time: string) {
-  const timeObj = dayjs(time)
-  const now = dayjs()
+	const timeObj = dayjs(time)
+	const now = dayjs()
 
-  if (timeObj.diff(now, "day") < 7) return timeObj.fromNow()
-  return timeObj.format("YYYY-MM-DD")
+	if (timeObj.diff(now, "day") < 7) return timeObj.fromNow()
+	return timeObj.format("YYYY-MM-DD")
 }
 
 </script>

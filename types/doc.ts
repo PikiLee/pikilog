@@ -1,5 +1,3 @@
-import { FileSystemNode } from "../parser/FileSystemTree";
-
 export interface Heading {
   title: string;
   slug: string;

@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { Heading } from "@/types/doc";
+import type { Heading } from "@/types/doc"
 import { useBreakpoints, breakpointsTailwind } from "@vueuse/core"
 
 interface Props {
   headings: Heading[];
 }
-defineProps<Props>();
+defineProps<Props>()
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
-const lgAndGreater = breakpoints.greaterOrEqual('lg')
+const lgAndGreater = breakpoints.greaterOrEqual("lg")
 
 const route = useRoute()
 const anchor = computed(() => route.hash.slice(1).replaceAll("-", " ").toLowerCase())

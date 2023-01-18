@@ -1,19 +1,20 @@
 <script setup lang="ts">
-import type { DocSideBarConfig } from "@/types/doc";
+import type { DocSideBarConfig } from "@/types/doc"
 
 const props = defineProps<{
   config: DocSideBarConfig;
   level: number;
-}>();
+}>()
 
 const fontSize = computed(() => {
-  const fontSize = Math.max(0, 1.2 - props.level * 0.2);
-  return `${fontSize}rem`;
-});
+	const fontSize = Math.max(0, 1.2 - props.level * 0.2)
+	return `${fontSize}rem`
+})
 
 // left padding starts from level 2
 const leftPadding = computed(() => `${1 * Math.max(0, props.level - 1)}em`)
 </script>
+
 <template>
   <li class="list" v-if="'items' in config">
     <header>

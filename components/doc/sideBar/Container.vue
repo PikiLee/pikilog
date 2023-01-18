@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { DocSideBarConfig } from "@/types/doc";
+import type { DocSideBarConfig } from "@/types/doc"
 import { useMediaQuery } from "@vueuse/core"
 
 defineProps<{
-  config: DocSideBarConfig;
-}>();
+  config: DocSideBarConfig
+}>()
 
-const isPhone = useMediaQuery('(max-width: 700px)')
+const isPhone = useMediaQuery("(max-width: 700px)")
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDark } from "@vueuse/core";
+import { useDark } from "@vueuse/core"
 import { ElSwitch, ElAvatar } from "element-plus"
 
 const isDark = useDark()
