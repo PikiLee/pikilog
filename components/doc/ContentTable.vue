@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import type { Heading } from "@/types/doc";
-import { useMediaQuery } from "@vueuse/core"
+import { useBreakpoints, useMediaQuery, breakpointsTailwind } from "@vueuse/core"
 
 interface Props {
   headings: Heading[];
 }
 defineProps<Props>();
 
-const isPad = useMediaQuery('(max-width: 1200px)')
+const breakpoints = useBreakpoints(breakpointsTailwind)
+const lgAndGreater = breakpoints.greaterOrEqual('lg')
 </script>
 
 <template>
-  <div class="content-table" v-if="!isPad">
+  <div class="content-table" v-if="lgAndGreater">
     <div class="sticky">
       <header class="title">Table of Contents</header>
       <ul class="list">
