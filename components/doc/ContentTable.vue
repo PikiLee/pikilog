@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Heading } from "@/types/doc";
-import { useBreakpoints, useMediaQuery, breakpointsTailwind } from "@vueuse/core"
+import { useBreakpoints, breakpointsTailwind } from "@vueuse/core"
 
 interface Props {
   headings: Heading[];
@@ -9,6 +9,9 @@ defineProps<Props>();
 
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const lgAndGreater = breakpoints.greaterOrEqual('lg')
+
+const route = useRoute()
+const anchor = computed(() => route.hash.slice(1).replaceAll("-", " ").toLowerCase())
 </script>
 
 <template>
@@ -16,7 +19,8 @@ const lgAndGreater = breakpoints.greaterOrEqual('lg')
     <div class="sticky">
       <header class="title">Table of Contents</header>
       <ul class="list">
-        <li :class="[heading.tag, 'item']" v-for="heading in headings" :key="heading.slug">
+        <li :class="[heading.tag, 'item', heading.title.toLowerCase() === anchor && 'active']"
+          v-for="heading in headings" :key="heading.slug">
           <NuxtLink :to="`#${heading.slug}`">{{ heading.title }}</NuxtLink>
         </li>
       </ul>
@@ -45,6 +49,14 @@ const lgAndGreater = breakpoints.greaterOrEqual('lg')
 
       .item {
         margin-bottom: 0.3em;
+
+        &.active {
+          color: $doc-link-dark;
+
+          html.dark & {
+            color: $doc-link-light;
+          }
+        }
       }
 
       @for $i from 1 through 6 {
