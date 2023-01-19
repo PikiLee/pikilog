@@ -10,7 +10,7 @@ module.exports = {
 	],
 	"overrides": [
 	],
-	"ignorePatterns": ["parser/dist/**", "node_modules"],
+	"ignorePatterns": ["parser/dist/**", "node_modules", "docs/**"],
 	"parser": "vue-eslint-parser",
 	"parserOptions": {
 		"ecmaVersion": "latest",
