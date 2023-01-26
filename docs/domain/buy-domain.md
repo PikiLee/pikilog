@@ -1,3 +1,7 @@
+---
+title: How to buy a domain in namecheap?
+---
+
 # Instructions
 
 ## Go to [Namecheap](https://www.namecheap.com/)

@@ -11,6 +11,8 @@ import MarkdownIt from "markdown-it"
 import MarkdownItAnchor from "markdown-it-anchor"
 import lodash from "lodash"
 import appConfig from "../plog.config"
+import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter"
+import type { MarkdownItEnv } from "@mdit-vue/types"
 
 export interface Mappings {
   [index: string]: string;
@@ -57,19 +59,11 @@ export const addClasses = (html: string, mappings: Mappings) => {
 }
 
 /**
- * Wrap html string with tags
- * @param {string} html
- * @param {string} tag - For example, div, div class="container"
- */
-const wrapHtmlWithTag = (html: string, tag: string) => {
-	return `<${tag}>${html}</${tag.split(" ")[0]}>`
-}
-
-/**
  * Render html to vue
  */
 export const renderHtmlToVue = (
 	html: string,
+	title = "",
 	headings: Heading[],
 	sideBarConfig: DocSideBarConfig | null,
 ) => {
@@ -77,7 +71,10 @@ export const renderHtmlToVue = (
 	<template>
 	<div class="plog-doc-container">
 		${sideBarConfig && "<DocSideBarContainer :config=\"sideBarConfig\" ></DocSideBarContainer>"}
-		<div class="plog-main-content>${ html }</div>
+		<div class="plog-main-content">
+			<h1>${ title }</h1>
+			${ html }
+		</div>
 		<DocContentTable :headings="headings"></DocContentTable>
 	</div>
 	</template>
@@ -132,17 +129,23 @@ const renderVueFile = (
 	const md = fs.readFileSync(inputFile).toString()
 
 	const headings: Heading[] = []
+	const env: MarkdownItEnv = {}
 	const mdi = MarkdownIt().use(MarkdownItAnchor, {
 		callback: (token, info) => {
 			const heading = { ...info } as Heading
 			heading.tag = token.tag
 			headings.push(heading)
 		},
-	})
-	let html = mdi.render(md)
+	}).use(frontmatterPlugin)
+	let html = mdi.render(md, env)
+
+	let title = ""
+	if (env.frontmatter) {
+		title = String(env.frontmatter.title)
+	}
 	html = addClasses(html, mappings)
 
-	const vue = renderHtmlToVue(html, headings, sideBarConfig)
+	const vue = renderHtmlToVue(html, title, headings, sideBarConfig)
 
 	const rebasedVue = rebaseImageLink(vue, inputFile, imageDirectory)
 

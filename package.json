@@ -8,11 +8,12 @@
 		"postinstall": "nuxt prepare",
 		"test:parser": "vitest -w --dir parser",
 		"render": "node parser/dist/parser/index.js",
-		"watch": "npm run compile:parser && node -w parser/dist/parser/index.js",
+		"watch": "npm run compile:parser && node parser/dist/parser/index.js",
 		"compile:parser": "cd ./parser && tsc",
 		"lint": "eslint . --ext .js,.ts,.vue,.json --fix"
 	},
 	"devDependencies": {
+		"@mdit-vue/plugin-frontmatter": "^0.11.1",
 		"@types/lodash": "^4.14.191",
 		"@typescript-eslint/eslint-plugin": "^5.48.2",
 		"@typescript-eslint/parser": "^5.48.2",
