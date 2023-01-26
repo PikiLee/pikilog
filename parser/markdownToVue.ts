@@ -72,7 +72,7 @@ export const renderHtmlToVue = (
 	<div class="plog-doc-container">
 		${sideBarConfig && "<DocSideBarContainer :config=\"sideBarConfig\" ></DocSideBarContainer>"}
 		<div class="plog-main-content">
-			<h1>${ title }</h1>
+			<h1 class="plog-doc-title">${ title }</h1>
 			${ html }
 		</div>
 		<DocContentTable :headings="headings"></DocContentTable>
