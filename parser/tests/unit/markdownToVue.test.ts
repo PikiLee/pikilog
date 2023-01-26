@@ -3,7 +3,6 @@ import { Directory, File } from "./../../FileSystemTree"
 import {
 	addClasses,
 	render,
-	renderHtmlToVue,
 	rebaseImageLink,
 } from "../../markdownToVue"
 import { describe, expect, test } from "vitest"
@@ -56,41 +55,6 @@ describe("test add class to html string", () => {
 		const res = addClasses(html, mappings)
 		expect(res).toEqual(
 			"<h1 class=\"head1\">I am Title</h1><h2 class=\"head2\">subtitle</h2>"
-		)
-	})
-})
-
-/**
- * partition on html:
- *  html string is empty
- *  html string is not empty
- *
- * partition on headings:
- *  headings is empty
- *  headings is not empty
- *
- * partition on sideBarConfig:
- *  no sideBarConfig
- *  has sideBarConfig
- */
-describe("test render html to vue.", () => {
-	test("Cover html string, headings is empty, no sideBarConfig", () => {
-		const html = ""
-		const vue = renderHtmlToVue(html, [], null)
-		expect(vue).toMatch(
-			/^<template>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
-		)
-	})
-
-	test("Cover html string, headings is not empty, has sideBarConfig", () => {
-		const html = "<h1>Heading 1</h1><h2>Heading 2</h2><h3>Heading3</h3>"
-		const vue = renderHtmlToVue(
-			html,
-			[],
-			{ text: "doc", link: "doc" }
-		)
-		expect(vue).toMatch(
-			/^<template>.*<DocSideBarContainer :config="sideBarConfig" ><\/DocSideBarContainer>.*<DocContentTable :headings="headings"><\/DocContentTable>.*<\/template>\s*<script setup lang="ts">.*<\/script>\s*$/s
 		)
 	})
 })
