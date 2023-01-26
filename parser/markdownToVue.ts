@@ -59,35 +59,6 @@ export const addClasses = (html: string, mappings: Mappings) => {
 }
 
 /**
- * Render html to vue
- */
-export const renderHtmlToVue = (
-	html: string,
-	title = "",
-	headings: Heading[],
-	sideBarConfig: DocSideBarConfig | null,
-) => {
-	const vue = `
-	<template>
-	<div class="plog-doc-container">
-		${sideBarConfig && "<DocSideBarContainer :config=\"sideBarConfig\" ></DocSideBarContainer>"}
-		<div class="plog-main-content">
-			<h1 class="plog-doc-title">${ title }</h1>
-			${ html }
-		</div>
-		<DocContentTable :headings="headings"></DocContentTable>
-	</div>
-	</template>
-
-	<script setup lang="ts">
-    const headings = ${JSON.stringify(headings)}
-    const sideBarConfig = ${JSON.stringify(sideBarConfig)}
-    </script>
-	`
-	return vue
-}
-
-/**
  * Copy images referenced in vue to the specified directory, and update the link in vue file.
  */
 export const rebaseImageLink = (
@@ -137,24 +108,37 @@ const renderVueFile = (
 			headings.push(heading)
 		},
 	}).use(frontmatterPlugin)
-	let html = mdi.render(md, env)
+	const html = mdi.render(md, env)
 
 	let title = ""
 	if (env.frontmatter) {
 		title = String(env.frontmatter.title)
 	}
-	html = addClasses(html, mappings)
 
-	const vue = renderHtmlToVue(html, title, headings, sideBarConfig)
+	const vue = `
+	<template>
+	<div class="plog-doc-container">
+		${sideBarConfig && "<DocSideBarContainer :config=\"sideBarConfig\" ></DocSideBarContainer>"}
+		<div class="plog-main-content">
+			<h1 class="plog-doc-title">${ title }</h1>
+			${ rebaseImageLink(addClasses(html, mappings), inputFile, imageDirectory) }
+		</div>
+		<DocContentTable :headings="headings"></DocContentTable>
+	</div>
+	</template>
 
-	const rebasedVue = rebaseImageLink(vue, inputFile, imageDirectory)
+	<script setup lang="ts">
+    const headings = ${JSON.stringify(headings)}
+    const sideBarConfig = ${JSON.stringify(sideBarConfig)}
+    </script>
+	`
 
 	fs.writeFileSync(
 		nodePath.join(
 			outputDirectory,
 			nodePath.basename(inputFile, nodePath.extname(inputFile)) + ".vue"
 		),
-		rebasedVue
+		vue
 	)
 }
 
