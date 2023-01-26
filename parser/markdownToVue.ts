@@ -73,29 +73,20 @@ export const renderHtmlToVue = (
 	headings: Heading[],
 	sideBarConfig: DocSideBarConfig | null,
 ) => {
-	let vue = html
+	const vue = `
+	<template>
+	<div class="plog-doc-container">
+		${sideBarConfig && "<DocSideBarContainer :config=\"sideBarConfig\" ></DocSideBarContainer>"}
+		<div class="plog-main-content>${ html }</div>
+		<DocContentTable :headings="headings"></DocContentTable>
+	</div>
+	</template>
 
-	vue = wrapHtmlWithTag(vue, "div class=\"plog-main-content\"")
-
-	if (sideBarConfig) {
-		vue =
-      "<DocSideBarContainer :config=\"sideBarConfig\" ></DocSideBarContainer>" +
-      vue
-	}
-
-	vue += "<DocContentTable :headings=\"headings\"></DocContentTable>"
-	vue = wrapHtmlWithTag(vue, "div class=\"plog-doc-container\"")
-
-	vue = wrapHtmlWithTag(vue, "template")
-
-	vue += `
-      <script setup lang="ts">
-
-      const headings = ${JSON.stringify(headings)}
-      const sideBarConfig = ${JSON.stringify(sideBarConfig)}
-      </script>
-      `
-
+	<script setup lang="ts">
+    const headings = ${JSON.stringify(headings)}
+    const sideBarConfig = ${JSON.stringify(sideBarConfig)}
+    </script>
+	`
 	return vue
 }
 
