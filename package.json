@@ -19,6 +19,7 @@
 		"@typescript-eslint/parser": "^5.48.2",
 		"eslint": "^8.32.0",
 		"eslint-plugin-nuxt": "^4.0.0",
+		"highlight.js": "^11.7.0",
 		"nuxt": "3.0.0",
 		"sass": "^1.57.1",
 		"vitest": "^0.26.0"

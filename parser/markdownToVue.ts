@@ -13,6 +13,7 @@ import lodash from "lodash"
 import appConfig from "../plog.config"
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter"
 import type { MarkdownItEnv } from "@mdit-vue/types"
+import hljs from "highlight.js"
 
 export interface Mappings {
   [index: string]: string;
@@ -101,7 +102,17 @@ const renderVueFile = (
 
 	const headings: Heading[] = []
 	const env: MarkdownItEnv = {}
-	const mdi = MarkdownIt().use(MarkdownItAnchor, {
+	const mdi = MarkdownIt({
+		highlight: function (str, lang) {
+			if (lang && hljs.getLanguage(lang)) {
+				try {
+					return `<pre class="hljs plog-code-block"><code>${hljs.highlight(str, { language: lang, ignoreIllegals: true }).value}</code></pre>`
+				} catch (__) {}
+			}
+
+			return "" // use external default escaping
+		}
+	}).use(MarkdownItAnchor, {
 		callback: (token, info) => {
 			const heading = { ...info } as Heading
 			heading.tag = token.tag
@@ -128,6 +139,7 @@ const renderVueFile = (
 	</template>
 
 	<script setup lang="ts">
+	import "highlight.js/styles/tomorrow-night-bright.css"
     const headings = ${JSON.stringify(headings)}
     const sideBarConfig = ${JSON.stringify(sideBarConfig)}
     </script>

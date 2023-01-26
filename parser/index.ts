@@ -10,8 +10,6 @@ const mappings: markdownToVue.Mappings = {
 	h5: "heading5",
 	ul: "unordered-list",
 	ol: "ordered-list",
-	code: "code",
-	pre: "code-block",
 	img: "image",
 	a: "link",
 	blockquote: "quote",

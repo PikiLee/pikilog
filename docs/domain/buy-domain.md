@@ -4,6 +4,18 @@ title: How to buy a domain in namecheap?
 
 # Instructions
 
+```js
+	const headings: Heading[] = []
+	const env: MarkdownItEnv = {}
+	const mdi = MarkdownIt().use(MarkdownItAnchor, {
+		callback: (token, info) => {
+			const heading = { ...info } as Heading
+			heading.tag = token.tag
+			headings.push(heading)
+		},
+	}).use(frontmatterPlugin)
+```
+
 ## Go to [Namecheap](https://www.namecheap.com/)
 ![The home page of Namecheap](./images/namecheap.png)
 

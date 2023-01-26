@@ -69,21 +69,12 @@ html {
         border-radius: 2em;
       }
       .#{$packageName}-code-block {
-        background-color: rgb(65, 65, 65);
-        padding: 1em;
-        font-weight: 700;
+        padding: 1em 0.5em;
         border: 1px solid rgb(114, 114, 114);
         font-size: 1.2rem;
         border-radius: 0.5em;
         width: min(90%, 40rem);
         overflow-x: scroll;
-
-        .#{$packageName}-code {
-          background-color: transparent;
-          padding: 0;
-          font-weight: inherit;
-          border-radius: 0;
-        }
 
         &::-webkit-scrollbar {
           height: 0.4em;
