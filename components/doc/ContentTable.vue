@@ -45,7 +45,6 @@ const anchor = computed(() => route.hash.slice(1).replaceAll("-", " ").toLowerCa
       left: 0;
       position: sticky;
       $base-padding-left: 1rem;
-      $base-font-size: 1.3rem;
 
       .item {
         margin-bottom: 0.3em;
@@ -61,7 +60,7 @@ const anchor = computed(() => route.hash.slice(1).replaceAll("-", " ").toLowerCa
 
       @for $i from 1 through 6 {
         .h#{$i} {
-          font-size: $base-font-size - (0.2rem * ($i - 1));
+          font-size: 1.2rem;
           padding-left: $base-padding-left * ($i - 1);
         }
       }
