@@ -14,6 +14,8 @@ import appConfig from "../plog.config"
 import { frontmatterPlugin } from "@mdit-vue/plugin-frontmatter"
 import type { MarkdownItEnv } from "@mdit-vue/types"
 import hljs from "highlight.js"
+import { componentPlugin } from "@mdit-vue/plugin-component"
+import { sfcPlugin } from "@mdit-vue/plugin-sfc"
 
 export interface Mappings {
   [index: string]: string;
@@ -103,6 +105,7 @@ const renderVueFile = (
 	const headings: Heading[] = []
 	const env: MarkdownItEnv = {}
 	const mdi = MarkdownIt({
+		html: true,
 		highlight: function (str, lang) {
 			if (lang && hljs.getLanguage(lang)) {
 				try {
@@ -112,14 +115,20 @@ const renderVueFile = (
 
 			return "" // use external default escaping
 		}
-	}).use(MarkdownItAnchor, {
-		callback: (token, info) => {
-			const heading = { ...info } as Heading
-			heading.tag = token.tag
-			headings.push(heading)
-		},
-	}).use(frontmatterPlugin)
+	}).use(componentPlugin)
+		.use(sfcPlugin)
+		.use(MarkdownItAnchor, {
+			callback: (token, info) => {
+				const heading = { ...info } as Heading
+				heading.tag = token.tag
+				headings.push(heading)
+			},
+		}).use(frontmatterPlugin)
 	const html = mdi.render(md, env)
+	console.log({env,
+		template: env.sfcBlocks?.template,
+		scripts: env.sfcBlocks?.scripts
+	})
 
 	let title = ""
 	if (env.frontmatter) {
@@ -129,20 +138,26 @@ const renderVueFile = (
 	const vue = `
 	<template>
 	<div class="plog-doc-container">
-		${sideBarConfig && "<DocSideBarContainer :config=\"sideBarConfig\" ></DocSideBarContainer>"}
+		${sideBarConfig && "<DocSideBarContainer :config=\"__p_sideBarConfig\" ></DocSideBarContainer>"}
 		<div class="plog-main-content">
 			<h1 class="plog-doc-title">${ title }</h1>
 			${ rebaseImageLink(addClasses(html, mappings), inputFile, imageDirectory) }
 		</div>
-		<DocContentTable :headings="headings"></DocContentTable>
+		<DocContentTable :headings="__p_headings"></DocContentTable>
 	</div>
 	</template>
 
 	<script setup lang="ts">
 	import "highlight.js/styles/tomorrow-night-bright.css"
-    const headings = ${JSON.stringify(headings)}
-    const sideBarConfig = ${JSON.stringify(sideBarConfig)}
+	${env.sfcBlocks?.scripts.reduce((accumulator, currentScript) => accumulator + currentScript.contentStripped, "")}
+	
+    const __p_headings = ${JSON.stringify(headings)}
+    const __p_sideBarConfig = ${JSON.stringify(sideBarConfig)}
     </script>
+
+	<style lang="scss" scoped>
+	${env.sfcBlocks?.styles.reduce((accumulator, currentStyle) => accumulator + currentStyle.contentStripped, "")}
+	</style>
 	`
 
 	fs.writeFileSync(

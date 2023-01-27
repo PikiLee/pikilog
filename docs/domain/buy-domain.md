@@ -16,6 +16,26 @@ title: How to buy a domain in namecheap?
 	}).use(frontmatterPlugin)
 ```
 
+<script>
+import {ref} from "vue"
+
+const count = ref(0)
+
+function increment() {
+    count.value++;
+}
+</script>
+
+<style>
+.hello {
+    font-size: 1rem;
+    background-color: red;
+}
+</style>
+
+<h1>{{ count }}</h1>
+<button @click="increment" class="hello">Increment</button>
+
 ## Go to [Namecheap](https://www.namecheap.com/)
 ![The home page of Namecheap](./images/namecheap.png)
 
