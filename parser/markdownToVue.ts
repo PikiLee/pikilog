@@ -125,20 +125,16 @@ const renderVueFile = (
 			},
 		}).use(frontmatterPlugin)
 	const html = mdi.render(md, env)
-	console.log({env,
-		template: env.sfcBlocks?.template,
-		scripts: env.sfcBlocks?.scripts
-	})
 
 	let title = ""
-	if (env.frontmatter) {
+	if (env.frontmatter?.title) {
 		title = String(env.frontmatter.title)
 	}
 
 	const vue = `
 	<template>
 	<div class="plog-doc-container">
-		${sideBarConfig && "<DocSideBarContainer :config=\"__p_sideBarConfig\" ></DocSideBarContainer>"}
+		${sideBarConfig ? "<DocSideBarContainer :config=\"__p_sideBarConfig\" ></DocSideBarContainer>" : "<div></div>"}
 		<div class="plog-main-content">
 			<h1 class="plog-doc-title">${ title }</h1>
 			${ rebaseImageLink(addClasses(html, mappings), inputFile, imageDirectory) }
