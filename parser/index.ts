@@ -1,6 +1,8 @@
 import * as markdownToVue from "./markdownToVue"
 import * as fs from "node:fs"
 import * as process from "node:process"
+import minimist from "minimist"
+import pc from "picocolors"
 
 const mappings: markdownToVue.Mappings = {
 	h1: "heading1",
@@ -30,10 +32,14 @@ const watch = (
 	callback: () => void,
 	immediate = false
 ) => {
-	if (immediate) callback()
+	const cb = () => {
+		callback()
+		console.log(pc.yellow("Watching for file changes."))
+	}
+	if (immediate) cb()
 	sources.forEach((source) => {
 		fs.watch(source, { recursive: true }, () => {
-			callback()
+			cb()
 		})
 	})
 }
@@ -55,8 +61,9 @@ const renderCallback = async () => {
 }
 
 let isRendering = false
-const argv = process.argv
-if ("-w" in argv || "--watch" in argv) {
+const argv = minimist(process.argv.slice(2))
+console.log(pc.yellow("----------- Parsing Starts -----------"))
+if ("w" in argv || "watch" in argv) {
 	watch([docsDirectory], renderCallback, true)
 } else {
 	markdownToVue.render(
