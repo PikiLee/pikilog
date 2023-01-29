@@ -26,8 +26,6 @@ html {
 
     .#{$packageName}-main-content {
       padding-inline: 3em;
-      border-right: 1px solid $line-dark;
-      border-left: 1px solid $line-dark;
       overflow: hidden;
 
       .#{$packageName}-doc-title {
